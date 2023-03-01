@@ -8,7 +8,7 @@ const config = {
   CSV: 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=resource_responders',
   center: [-118.254643, 34.049157],
   zoom: 10,
-  title: 'Community Fridges + Pantries',
+  title: 'Resource Responders',
   description:
     'This is a tool to find resources in Los Angeles and the surrounding areas. You can find the nearest food pantries, fridges, or shelters with just a few clicks',
   sideBarInfo: ['Location_Name', 'Address', 'Description', 'Hours'],
