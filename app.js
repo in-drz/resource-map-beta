@@ -428,75 +428,109 @@ map.on('load', () => {
 
   // csv2geojson - following the Sheet Mapper tutorial https://www.mapbox.com/impact-tools/sheet-mapper
   console.log('loaded');
-  $(document).ready(() => {
-    console.log('ready');
-    $.ajax({
-      type: 'GET',
-      url: config.CSV,
-      dataType: 'text',
-      success: function (csvData) {
-        makeGeoJSON(csvData);
-      },
-      error: function (request, status, error) {
-        console.log(request);
-        console.log(status);
-        console.log(error);
-      },
-    });
+let resourceRespondersVisible = true;
+let donationsVisible = true;
+const resourceRespondersCSV = 'https://docs.google.com/spreadsheets/d/1234/export?format=csv'; // replace with your resource responders CSV URL
+const donationsCSV = 'https://docs.google.com/spreadsheets/d/5678/export?format=csv'; // replace with your donations CSV URL
+
+$(document).ready(() => {
+  console.log('ready');
+  $.ajax({
+    type: 'GET',
+    url: config.CSV,
+    dataType: 'text',
+    success: function (csvData) {
+      makeGeoJSON(csvData);
+    },
+    error: function (request, status, error) {
+      console.log(request);
+      console.log(status);
+      console.log(error);
+    },
+  });
+});
+
+function makeGeoJSON(csvData) {
+  csv2geojson.csv2geojson(
+    csvData,
+    {
+      latfield: 'Latitude',
+      lonfield: 'Longitude',
+      delimiter: ',',
+    },
+    (err, data) => {
+      data.features.forEach((data, i) => {
+        data.properties.id = i;
+      });
+
+      geojsonData = data;
+      // Add the locationData layer to the map
+      map.addLayer({
+        id: 'locationData',
+        type: 'circle',
+        source: {
+          type: 'geojson',
+          data: geojsonData,
+        },
+        paint: {
+          'circle-radius': 5, // size of circles
+          'circle-color': '#3D2E5D', // color of circles
+          'circle-stroke-color': 'white',
+          'circle-stroke-width': 1,
+          'circle-opacity': 0.7,
+        },
+      });
+    },
+  );
+
+  // Add the resourceResponders layer to the map
+  $.ajax({
+    type: 'GET',
+    url: resourceRespondersCSV,
+    dataType: 'text',
+    success: function (csvData) {
+      makeResourceRespondersGeoJSON(csvData);
+    },
+    error: function (request, status, error) {
+      console.log(request);
+      console.log(status);
+      console.log(error);
+    },
   });
 
-  function makeGeoJSON(csvData) {
-    csv2geojson.csv2geojson(
-      csvData,
-      {
-        latfield: 'Latitude',
-        lonfield: 'Longitude',
-        delimiter: ',',
-      },
-      (err, data) => {
-        data.features.forEach((data, i) => {
-          data.properties.id = i;
-        });
+  // Add the donations layer to the map
+  $.ajax({
+    type: 'GET',
+    url: donationsCSV,
+    dataType: 'text',
+    success: function (csvData) {
+      makeDonationsGeoJSON(csvData);
+    },
+    error: function (request, status, error) {
+      console.log(request);
+      console.log(status);
+      console.log(error);
+    },
+  });
 
-        geojsonData = data;
-        // Add the the layer to the map
-        map.addLayer({
-          id: 'locationData',
-          type: 'circle',
-          source: {
-            type: 'geojson',
-            data: geojsonData,
-          },
-          paint: {
-            'circle-radius': 5, // size of circles
-            'circle-color': '#3D2E5D', // color of circles
-            'circle-stroke-color': 'white',
-            'circle-stroke-width': 1,
-            'circle-opacity': 0.7,
-          },
-        });
-      },
-    );
-
-    map.on('click', 'locationData', (e) => {
-      const features = map.queryRenderedFeatures(e.point, {
-        layers: ['locationData'],
-      });
-      const clickedPoint = features[0].geometry.coordinates;
-      flyToLocation(clickedPoint);
-      sortByDistance(clickedPoint);
-      createPopup(features[0]);
+  map.on('click', 'locationData', (e) => {
+    const features = map.queryRenderedFeatures(e.point, {
+      layers: ['locationData'],
     });
+    const clickedPoint = features[0].geometry.coordinates;
+    flyToLocation(clickedPoint);
+    sortByDistance(clickedPoint);
+    createPopup(features[0]);
+  });
 
-    map.on('mouseenter', 'locationData', () => {
-      map.getCanvas().style.cursor = 'pointer';
-    });
+  map.on('mouseenter', 'locationData', () => {
+    map.getCanvas().style.cursor = 'pointer';
+  });
 
-    map.on('mouseleave', 'locationData', () => {
-      map.getCanvas().style.cursor = '';
-    });
-    buildLocationList(geojsonData);
-  }
+  map.on('mouseleave', 'locationData', () => {
+    map.getCanvas().style.cursor = '';
+  });
+  buildLocationList(geojsonData);
 });
 
 // Modal - popup for filtering results
