@@ -430,8 +430,8 @@ map.on('load', () => {
   console.log('loaded');
 let resourceRespondersVisible = true;
 let donationsVisible = true;
-const resourceRespondersCSV = 'https://docs.google.com/spreadsheets/d/1234/export?format=csv'; // replace with your resource responders CSV URL
-const donationsCSV = 'https://docs.google.com/spreadsheets/d/5678/export?format=csv'; // replace with your donations CSV URL
+const resourceRespondersCSV = 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=resource_responders'; // replace with your resource responders CSV URL
+const donationsCSV = 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=bag_donations'; // replace with your donations CSV URL
 
 $(document).ready(() => {
   console.log('ready');
