@@ -63,4 +63,8 @@ const config = {
       ],
     },
   ],
+  
+  CSV1: 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=resource_responders',
+  // Second CSV layer
+  CSV2: 'https://docs.google.com/spreadsheets/d/1lWgJ9XzhyqkFyjK8yfTn53JgN2bMXDjNlj8ZgtWV0zo/gviz/tq?tqx=out:csv&sheet=bag_donations',
 };
