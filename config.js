@@ -5,7 +5,6 @@ const config = {
   style: 'mapbox://styles/mapbox/light-v11',
   accessToken:
     'pk.eyJ1IjoiaW4tZHJ6IiwiYSI6ImNsZXhxdWNmOTFxZDQzdnFvYmRhdHl0czQifQ.fJZWF9JhBmdx-DbEY4deow',
-  CSV: 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=resource_responders',
   center: [-118.254643, 34.049157],
   zoom: 10,
   title: 'Resource Responders',
