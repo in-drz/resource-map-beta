@@ -453,10 +453,10 @@ map.on('load', () => {
   
   makeGeoJSON(currentCSV);
 
-  function makeGeoJSON(csvUrl) {
+  function makeGeoJSON(currentCSV) {
     $.ajax({
       type: 'GET',
-      url: csvUrl,
+      url: currentCSV,
       dataType: 'text',
       success: function (csvData) {
         csv2geojson.csv2geojson(
