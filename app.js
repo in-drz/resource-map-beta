@@ -529,7 +529,10 @@ map.on('load', () => {
       currentCSV = config.CSV;
     }
 
+    if (map.getSource('locationData')) {
     map.removeLayer('locationData');
+    map.removeSource('locationData');
+  }
     makeGeoJSON(currentCSV);
   });
 });
