@@ -437,7 +437,7 @@ $(document).ready(() => {
   console.log('ready');
   $.ajax({
     type: 'GET',
-    url: config.CSV1,
+    url: resourceRespondersCSV,
     dataType: 'text',
     success: function (csvData) {
       makeGeoJSON(csvData);
@@ -486,7 +486,7 @@ function makeGeoJSON(csvData) {
   // Add the resourceResponders layer to the map
   $.ajax({
     type: 'GET',
-    url: config.CSV1,
+    url: resourceRespondersCSV,
     dataType: 'text',
     success: function (csvData) {
       makeResourceRespondersGeoJSON(csvData);
@@ -501,7 +501,7 @@ function makeGeoJSON(csvData) {
   // Add the donations layer to the map
   $.ajax({
     type: 'GET',
-    url: config.CSV2,
+    url: donationsCSV,
     dataType: 'text',
     success: function (csvData) {
       makeDonationsGeoJSON(csvData);
