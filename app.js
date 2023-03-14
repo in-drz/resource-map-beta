@@ -445,59 +445,71 @@ map.on('load', () => {
     });
   });
 
-  function makeGeoJSON(csvData) {
-    csv2geojson.csv2geojson(
-      csvData,
-      {
-        latfield: 'Latitude',
-        lonfield: 'Longitude',
-        delimiter: ',',
-      },
-      (err, data) => {
-        data.features.forEach((data, i) => {
-          data.properties.id = i;
-        });
+  function makeGeoJSON(csvUrl) {
+  $.ajax({
+    type: 'GET',
+    url: csvUrl,
+    dataType: 'text',
+    success: function (csvData) {
+      csv2geojson.csv2geojson(
+        csvData,
+        {
+          latfield: 'Latitude',
+          lonfield: 'Longitude',
+          delimiter: ',',
+        },
+        (err, data) => {
+          data.features.forEach((data, i) => {
+            data.properties.id = i;
+          });
 
-        geojsonData = data;
-        // Add the the layer to the map
-        map.addLayer({
-          id: 'locationData',
-          type: 'circle',
-          source: {
-            type: 'geojson',
-            data: geojsonData,
-          },
-          paint: {
-            'circle-radius': 5, // size of circles
-            'circle-color': '#3D2E5D', // color of circles
-            'circle-stroke-color': 'white',
-            'circle-stroke-width': 1,
-            'circle-opacity': 0.7,
-          },
-        });
-      },
-    );
+          geojsonData = data;
+          // Add the the layer to the map
+          map.addLayer({
+            id: 'locationData',
+            type: 'circle',
+            source: {
+              type: 'geojson',
+              data: geojsonData,
+            },
+            paint: {
+              'circle-radius': 5, // size of circles
+              'circle-color': '#3D2E5D', // color of circles
+              'circle-stroke-color': 'white',
+              'circle-stroke-width': 1,
+              'circle-opacity': 0.7,
+            },
+          });
+        },
+      );
 
-    map.on('click', 'locationData', (e) => {
-      const features = map.queryRenderedFeatures(e.point, {
-        layers: ['locationData'],
+      map.on('click', 'locationData', (e) => {
+        const features = map.queryRenderedFeatures(e.point, {
+          layers: ['locationData'],
+        });
+        const clickedPoint = features[0].geometry.coordinates;
+        flyToLocation(clickedPoint);
+        sortByDistance(clickedPoint);
+        createPopup(features[0]);
       });
-      const clickedPoint = features[0].geometry.coordinates;
-      flyToLocation(clickedPoint);
-      sortByDistance(clickedPoint);
-      createPopup(features[0]);
-    });
 
-    map.on('mouseenter', 'locationData', () => {
-      map.getCanvas().style.cursor = 'pointer';
-    });
+      map.on('mouseenter', 'locationData', () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
 
-    map.on('mouseleave', 'locationData', () => {
-      map.getCanvas().style.cursor = '';
-    });
-    buildLocationList(geojsonData);
+      map.on('mouseleave', 'locationData', () => {
+        map.getCanvas().style.cursor = '';
+      });
+      buildLocationList(geojsonData);
+    },
+    error: function (request, status, error) {
+      console.log(request);
+      console.log(status);
+      console.log(error);
+    },
+  });
   }
-});
+
 
 // Modal - popup for filtering results
 const filterResults = document.getElementById('filterResults');
