@@ -437,10 +437,10 @@ map.on('load', () => {
     
     $.ajax({
       type: 'GET',
-      url: currentCSV,
+      url: config.CSV,
       dataType: 'text',
-      success: function (currentCSV) {
-        makeGeoJSON(currentCSV);
+      success: function (csvData) {
+        makeGeoJSON(csvData);
       },
       error: function (request, status, error) {
         console.log(request);
@@ -450,8 +450,9 @@ map.on('load', () => {
     });
   });
   
-  makeGeoJSON(currentCSV);
   
+  makeGeoJSON(currentCSV);
+
   function makeGeoJSON(currentCSV) {
     $.ajax({
       type: 'GET',
@@ -529,6 +530,7 @@ map.on('load', () => {
     map.removeLayer('locationData');
     makeGeoJSON(currentCSV);
   });
+});
   
   
 // Modal - popup for filtering results
