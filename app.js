@@ -427,6 +427,7 @@ map.on('load', () => {
   map.addControl(geocoder, 'top-right');
 
   // csv2geojson - following the Sheet Mapper tutorial https://www.mapbox.com/impact-tools/sheet-mapper
+  let currentCSV = config.CSV;
   console.log('loaded');
   $(document).ready(() => {
     console.log('ready');
@@ -509,6 +510,15 @@ map.on('load', () => {
     },
   });
   }
+  $('#toggleButton').click(() => {
+  if (currentCSV === config.CSV) {
+    currentCSV = config.CSV2;
+  } else {
+    currentCSV = config.CSV;
+  }
+  map.removeLayer('locationData');
+  makeGeoJSON(currentCSV);
+});
 
 
 // Modal - popup for filtering results
