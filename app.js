@@ -381,6 +381,7 @@ removeFiltersButton();
 const geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken, // Set the access token
   mapboxgl: mapboxgl, // Set the mapbox-gl instance
+  bbox: [-118.944112,32.806553,-117.644787,34.822766]
   marker: true, // Use the geocoder's default marker style
   zoom: 11,
 });
@@ -421,6 +422,15 @@ function sortByDistance(selectedPoint) {
 geocoder.on('result', (ev) => {
   const searchResult = ev.result.geometry;
   sortByDistance(searchResult);
+  
+ /* const options = { units: 'miles' };
+  for (const store of stores.features) {
+    store.properties.distance = turf.distance(
+      searchResult,
+      store.geometry,
+      options
+  );
+} */
 });
 
 map.on('load', () => {
