@@ -5,39 +5,10 @@ const config = {
   style: 'mapbox://styles/mapbox/light-v11',
   accessToken:
     'pk.eyJ1IjoiaW4tZHJ6IiwiYSI6ImNsZXhxdWNmOTFxZDQzdnFvYmRhdHl0czQifQ.fJZWF9JhBmdx-DbEY4deow',
-  CSV: 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=resource_responders'
-  // Second CSV layer
+  CSV: 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=resource_responders',
   center: [-118.254643, 34.049157],
   zoom: 10,
-  
-   // CSV configuration options
-  CSVs: {
-    resource_responders: {
-      url:
-        'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=resource_responders',
-      latColumn: 'latitude',
-      lonColumn: 'longitude',
-      markerColor: '#3FB1CE',
-      markerRadius: 8,
-      markerType: 'circle',
-      visible: true,
-    },
-    donations: {
-      url:
-        'https://docs.google.com/spreadsheets/d/1qE-SgwW8JcZpPnZw57n19Yi-EW_zPmL07X2ySGeB85c/gviz/tq?tqx=out:csv&sheet=bag_donations',
-      latColumn: 'latitude',
-      lonColumn: 'longitude',
-      markerColor: '#ED4D5D',
-      markerRadius: 8,
-      markerType: 'circle',
-      visible: false,
-    },
-  },
-  
-  // Initial active CSV
-  activeCSV: 'resource_responders',
-
-  title: 'Resource Maps',
+  title: 'Resource Responders',
   description:
     'This is a tool to find resources in Los Angeles and the surrounding areas. You can find the nearest food pantries, fridges, or shelters with just a few clicks',
   sideBarInfo: ['full_name', 'email_address', 'physical_address'],
@@ -93,5 +64,4 @@ const config = {
       ],
     },
   ],
- 
 };
