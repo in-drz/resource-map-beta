@@ -521,6 +521,8 @@ map.on('load', () => {
   }
 
   $('#toggleButton').click(() => {
+    let currentCSV = config.CSV;
+    
     if (currentCSV === config.CSV) {
       currentCSV = config.CSV2;
     } else {
