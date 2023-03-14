@@ -24,9 +24,7 @@
 
 <body>
     
-    <button id="toggleButton1">Resource Responders</button>
-    <button id="toggleButton2">Donations</button>
-    
+
     <div class='flex-parent viewport-full relative scroll-hidden'>
         <div class='flex-child w-full w360-ml absolute static-ml left bottom'>
             <div class='flex-parent flex-parent--column viewport-third bg-white'>
@@ -34,8 +32,10 @@
                 <div class='flex-child flex-child--grow'>
                     <div id="sidebarA"
                         class="flex-parent flex-parent--column-ml flex-parent--center-main theme py12 px12 ">
-                        <h3 id='title' class='txt-l-ml txt-m txt-bold mb6 mr0-ml mr24 align-center block'>
-                        </h3>
+                        <div class="flex-parent flex-parent--center-main relative-ml absolute left top mt0-ml mt6">
+                            <button id="toggleButton1" class='txt-bold btn btn--stroke mr0-ml mr12 px18-ml px6'>Resource Responders</button>
+                            <button id="toggleButton2" class='txt-bold btn btn--stroke mr0-ml mr12 px18-ml px6'>Donations</button>
+                        </div>
                         <p id='description' class='txt-s py12 none block-ml'>
                         </p>
                         <div class="flex-parent flex-parent--center-main relative-ml absolute right top mt0-ml mt6">
