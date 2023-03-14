@@ -2,12 +2,44 @@
     color: black;
 }
 
+#toggleButton1,
+#toggleButton2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #fff;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+#toggleButton1:hover,
+#toggleButton2:hover {
+  background-color: #f4f4f4;
+  border-color: #bbb;
+}
+
+#toggleButton1:focus,
+#toggleButton2:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
 #filterResults{
     font-size: 12px;
     color: white;
     background-color: #000000;
 
 }
+
 
 .theme{
     background-color: #F9D50B;
