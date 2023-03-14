@@ -520,20 +520,22 @@ map.on('load', () => {
     });
   }
 
-  $('#toggleButton').click(() => {
-    let currentCSV = config.CSV;
+  $('#toggleButton1').click(() => {
     
-    if (currentCSV === config.CSV) {
-      currentCSV = config.CSV2;
-    } else {
-      currentCSV = config.CSV;
-    }
-
     if (map.getSource('locationData')) {
     map.removeLayer('locationData');
     map.removeSource('locationData');
   }
-    makeGeoJSON(currentCSV);
+    makeGeoJSON(config.CSV);
+  });
+  
+  $('#toggleButton2').click(() => {
+    
+    if (map.getSource('locationData')) {
+    map.removeLayer('locationData');
+    map.removeSource('locationData');
+  }
+    makeGeoJSON(config.CSV2);
   });
 });
   
