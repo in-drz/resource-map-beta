@@ -24,7 +24,7 @@ const config = {
     },
     donations: {
       url:
-        'https://docs.google.com/spreadsheets/d/1qE-SgwW8JcZpPnZw57n19Yi-EW_zPmL07X2ySGeB85c/gviz/tq?tqx=out:csv&sheet=Homeless_Services',
+        'https://docs.google.com/spreadsheets/d/1qE-SgwW8JcZpPnZw57n19Yi-EW_zPmL07X2ySGeB85c/gviz/tq?tqx=out:csv&sheet=bag_donations',
       latColumn: 'latitude',
       lonColumn: 'longitude',
       markerColor: '#ED4D5D',
