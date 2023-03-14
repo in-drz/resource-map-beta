@@ -428,16 +428,16 @@ map.on('load', () => {
 
   // csv2geojson - following the Sheet Mapper tutorial https://www.mapbox.com/impact-tools/sheet-mapper
   console.log('loaded');
-  let currentCSV = config.CSV;
+  
   
   $(document).ready(() => {
     
     console.log('ready');
-    
+    let currentCSV = config.CSV;
     
     $.ajax({
       type: 'GET',
-      url: config.CSV,
+      url: currentCSV,
       dataType: 'text',
       success: function (currentCSV) {
         makeGeoJSON(currentCSV);
@@ -450,9 +450,6 @@ map.on('load', () => {
     });
   });
   
-  
-  makeGeoJSON(currentCSV);
-
   function makeGeoJSON(currentCSV) {
     $.ajax({
       type: 'GET',
@@ -530,7 +527,6 @@ map.on('load', () => {
     map.removeLayer('locationData');
     makeGeoJSON(currentCSV);
   });
-
   
   
 // Modal - popup for filtering results
