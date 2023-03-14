@@ -450,6 +450,8 @@ map.on('load', () => {
     });
   });
   
+  makeGeoJSON(currentCSV);
+  
   function makeGeoJSON(currentCSV) {
     $.ajax({
       type: 'GET',
