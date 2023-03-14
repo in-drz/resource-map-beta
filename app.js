@@ -428,16 +428,15 @@ map.on('load', () => {
 
   // csv2geojson - following the Sheet Mapper tutorial https://www.mapbox.com/impact-tools/sheet-mapper
   console.log('loaded');
-let resourceRespondersVisible = true;
-let donationsVisible = true;
 
-const donationsCSV = 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=bag_donations'; // replace with your donations CSV URL
+
+let csvUrl = 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=resource_responders';
 
 $(document).ready(() => {
   console.log('ready');
   $.ajax({
     type: 'GET',
-    url: resourceRespondersCSV,
+    url: csvUrl,
     dataType: 'text',
     success: function (csvData) {
       makeGeoJSON(csvData);
