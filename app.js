@@ -427,10 +427,30 @@ map.on('load', () => {
   map.addControl(geocoder, 'top-right');
 
   // csv2geojson - following the Sheet Mapper tutorial https://www.mapbox.com/impact-tools/sheet-mapper
-  $(document).ready(() => {
-  let currentCSV = config.CSV;
-
   console.log('loaded');
+  
+  
+  $(document).ready(() => {
+    
+    console.log('ready');
+    let currentCSV = config.CSV;
+    
+    $.ajax({
+      type: 'GET',
+      url: config.CSV,
+      dataType: 'text',
+      success: function (csvData) {
+        makeGeoJSON(csvData);
+      },
+      error: function (request, status, error) {
+        console.log(request);
+        console.log(status);
+        console.log(error);
+      },
+    });
+  });
+  
+  
   makeGeoJSON(currentCSV);
 
   function makeGeoJSON(csvUrl) {
