@@ -451,7 +451,7 @@ map.on('load', () => {
   });
   
   
-  makeGeoJSON(currentCSV);
+  makeGeoJSON(config.CSV);
 
   function makeGeoJSON(currentCSV) {
     $.ajax({
