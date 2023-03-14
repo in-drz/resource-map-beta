@@ -449,6 +449,23 @@ $(document).ready(() => {
   });
 });
 
+// Function to retrieve and parse the selected CSV file
+function loadCSV(csvUrl) {
+  $.ajax({
+    type: 'GET',
+    url: csvUrl,
+    dataType: 'text',
+    success: function (csvData) {
+      makeGeoJSON(csvData);
+    },
+    error: function (request, status, error) {
+      console.log(request);
+      console.log(status);
+      console.log(error);
+    },
+  });
+}
+
 function makeGeoJSON(csvData) {
   csv2geojson.csv2geojson(
     csvData,
@@ -463,7 +480,7 @@ function makeGeoJSON(csvData) {
       });
 
       geojsonData = data;
-      // Add the locationData layer to the map
+      // Add the the layer to the map
       map.addLayer({
         id: 'locationData',
         type: 'circle',
@@ -481,36 +498,6 @@ function makeGeoJSON(csvData) {
       });
     },
   );
-
-  // Add the resourceResponders layer to the map
-  $.ajax({
-    type: 'GET',
-    url: resourceRespondersCSV,
-    dataType: 'text',
-    success: function (csvData) {
-      makeResourceRespondersGeoJSON(csvData);
-    },
-    error: function (request, status, error) {
-      console.log(request);
-      console.log(status);
-      console.log(error);
-    },
-  });
-
-  // Add the donations layer to the map
-  $.ajax({
-    type: 'GET',
-    url: donationsCSV,
-    dataType: 'text',
-    success: function (csvData) {
-      makeDonationsGeoJSON(csvData);
-    },
-    error: function (request, status, error) {
-      console.log(request);
-      console.log(status);
-      console.log(error);
-    },
-  });
 
   map.on('click', 'locationData', (e) => {
     const features = map.queryRenderedFeatures(e.point, {
@@ -530,8 +517,9 @@ function makeGeoJSON(csvData) {
     map.getCanvas().style.cursor = '';
   });
   buildLocationList(geojsonData);
-});
-  
+}
+
+
   // Get the button elements
 const csv1Button = document.getElementById('resourceRespondersButton');
 const csv2Button = document.getElementById('donationsButton');
