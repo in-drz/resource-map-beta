@@ -430,7 +430,7 @@ map.on('load', () => {
   console.log('loaded');
 let resourceRespondersVisible = true;
 let donationsVisible = true;
-const resourceRespondersCSV = 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=resource_responders'; // replace with your resource responders CSV URL
+
 const donationsCSV = 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=bag_donations'; // replace with your donations CSV URL
 
 $(document).ready(() => {
@@ -531,6 +531,19 @@ function makeGeoJSON(csvData) {
     map.getCanvas().style.cursor = '';
   });
   buildLocationList(geojsonData);
+});
+  
+  // Get the button elements
+const csv1Button = document.getElementById('resourceRespondersButton');
+const csv2Button = document.getElementById('donationsButton');
+
+// Add event listeners to each button
+resourceRespondersButton.addEventListener('click', () => {
+  config.CSV = 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=resource_responders';
+});
+
+donationsButton.addEventListener('click', () => {
+  config.CSV = 'https://docs.google.com/spreadsheets/d/1YvbSE3Lg-osHDwpM3_wCIdLEBk2riEFbu7j2Il1xogc/gviz/tq?tqx=out:csv&sheet=bag_donations';
 });
 
 // Modal - popup for filtering results
