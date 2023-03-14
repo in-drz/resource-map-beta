@@ -428,12 +428,12 @@ map.on('load', () => {
 
   // csv2geojson - following the Sheet Mapper tutorial https://www.mapbox.com/impact-tools/sheet-mapper
   console.log('loaded');
-  
+  let currentCSV = config.CSV;
   
   $(document).ready(() => {
     
     console.log('ready');
-    let currentCSV = config.CSV;
+    
     
     $.ajax({
       type: 'GET',
