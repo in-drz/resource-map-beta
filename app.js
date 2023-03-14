@@ -439,8 +439,8 @@ map.on('load', () => {
       type: 'GET',
       url: config.CSV,
       dataType: 'text',
-      success: function (csvData) {
-        makeGeoJSON(csvData);
+      success: function (currentCSV) {
+        makeGeoJSON(currentCSV);
       },
       error: function (request, status, error) {
         console.log(request);
