@@ -530,7 +530,7 @@ map.on('load', () => {
     map.removeLayer('locationData');
     makeGeoJSON(currentCSV);
   });
-});
+
   
   
 // Modal - popup for filtering results
