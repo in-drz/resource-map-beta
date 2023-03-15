@@ -13,7 +13,7 @@ const config = {
   description:
     'This is a tool to find resources in Los Angeles and the surrounding areas. You can find the nearest food pantries, fridges, or shelters with just a few clicks',
   sideBarInfo: ['full_name', 'email_address', 'physical_address'],
-  popupInfo: ['full_name', 'email_address', 'physical_address'],
+  popupInfo: ['full_name'],
   filters: [
     {
       type: 'dropdown',
