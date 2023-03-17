@@ -463,74 +463,74 @@ map.on('load', () => {
   });
   
   
-  makeGeoJSON(config.CSV);
+    makeGeoJSON(config.CSV);
 
-  function makeGeoJSON(currentCSV, layerId) {
-  $.ajax({
-    type: 'GET',
-    url: currentCSV,
-    dataType: 'text',
-    success: function (csvData) {
-      csv2geojson.csv2geojson(
-        csvData,
-        {
-          latfield: 'Latitude',
-          lonfield: 'Longitude',
-          delimiter: ',',
-        },
-        (err, data) => {
-          data.features.forEach((data, i) => {
-            data.properties.id = i;
+    function makeGeoJSON(currentCSV, layerId) {
+    $.ajax({
+      type: 'GET',
+      url: currentCSV,
+      dataType: 'text',
+      success: function (csvData) {
+        csv2geojson.csv2geojson(
+          csvData,
+          {
+            latfield: 'Latitude',
+            lonfield: 'Longitude',
+            delimiter: ',',
+          },
+          (err, data) => {
+            data.features.forEach((data, i) => {
+              data.properties.id = i;
+            });
+
+            geojsonData = data;
+
+            // Add the layer to the map
+            map.addLayer({
+              id: layerId,
+              type: 'circle',
+              source: {
+                type: 'geojson',
+                data: geojsonData,
+              },
+              paint: {
+                'circle-radius': 5, // size of circles
+                'circle-color': '#3D2E5D', // color of circles
+                'circle-stroke-color': 'white',
+                'circle-stroke-width': 1,
+                'circle-opacity': 0.7,
+              },
+            });
+          },
+        );
+
+        map.on('click', layerId, (e) => {
+          const features = map.queryRenderedFeatures(e.point, {
+            layers: [layerId],
           });
-
-          geojsonData = data;
-
-          // Add the layer to the map
-          map.addLayer({
-            id: layerId,
-            type: 'circle',
-            source: {
-              type: 'geojson',
-              data: geojsonData,
-            },
-            paint: {
-              'circle-radius': 5, // size of circles
-              'circle-color': '#3D2E5D', // color of circles
-              'circle-stroke-color': 'white',
-              'circle-stroke-width': 1,
-              'circle-opacity': 0.7,
-            },
-          });
-        },
-      );
-
-      map.on('click', layerId, (e) => {
-        const features = map.queryRenderedFeatures(e.point, {
-          layers: [layerId],
+          const clickedPoint = features[0].geometry.coordinates;
+          flyToLocation(clickedPoint);
+          sortByDistance(clickedPoint);
+          createPopup(features[0]);
         });
-        const clickedPoint = features[0].geometry.coordinates;
-        flyToLocation(clickedPoint);
-        sortByDistance(clickedPoint);
-        createPopup(features[0]);
-      });
 
-      map.on('mouseenter', layerId, () => {
-        map.getCanvas().style.cursor = 'pointer';
-      });
+        map.on('mouseenter', layerId, () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
 
-      map.on('mouseleave', layerId, () => {
-        map.getCanvas().style.cursor = '';
-      });
+        map.on('mouseleave', layerId, () => {
+          map.getCanvas().style.cursor = '';
+        });
 
-      buildLocationList(geojsonData);
-    },
-    error: function (request, status, error) {
-      console.log(request);
-      console.log(status);
-      console.log(error);
-    },
-  });
- }
+        buildLocationList(geojsonData);
+      },
+      error: function (request, status, error) {
+        console.log(request);
+        console.log(status);
+        console.log(error);
+      },
+    });
+   }
 
   let currentLayer = null;
 
