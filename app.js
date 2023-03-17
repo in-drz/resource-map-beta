@@ -44,7 +44,10 @@ function createPopup(currentFeature) {
   if (popups[0]) popups[0].remove();
   new mapboxgl.Popup({ closeOnClick: true })
     .setLngLat(currentFeature.geometry.coordinates)
-    .setHTML('<h3>' + currentFeature.properties[config.popupInfo] + '</h3>')
+    .setHTML('<h3>' + currentFeature.properties[config.popupInfo] + '</h3>' +
+             '<p>Address: ' + currentFeature.properties.physical_address + '</p>' +
+             '<p>Phone: ' + currentFeature.properties.phone_number + '</p>'
+             '<p>Max Distance Willing to Travel: + currentFeature.properties.max_distance + '</p>')
     .addTo(map);
 }
 
