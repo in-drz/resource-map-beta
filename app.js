@@ -465,72 +465,72 @@ map.on('load', () => {
   
   makeGeoJSON(config.CSV);
 
-  function makeGeoJSON(currentCSV) {
-    $.ajax({
-      type: 'GET',
-      url: currentCSV,
-      dataType: 'text',
-      success: function (csvData) {
-        csv2geojson.csv2geojson(
-          csvData,
-          {
-            latfield: 'Latitude',
-            lonfield: 'Longitude',
-            delimiter: ',',
-          },
-          (err, data) => {
-            data.features.forEach((data, i) => {
-              data.properties.id = i;
-            });
-
-            geojsonData = data;
-
-            // Add the layer to the map
-            map.addLayer({
-              id: 'locationData',
-              type: 'circle',
-              source: {
-                type: 'geojson',
-                data: geojsonData,
-              },
-              paint: {
-                'circle-radius': 5, // size of circles
-                'circle-color': '#3D2E5D', // color of circles
-                'circle-stroke-color': 'white',
-                'circle-stroke-width': 1,
-                'circle-opacity': 0.7,
-              },
-            });
-          },
-        );
-
-        map.on('click', 'locationData', (e) => {
-          const features = map.queryRenderedFeatures(e.point, {
-            layers: ['locationData'],
+  function makeGeoJSON(currentCSV, layerId) {
+  $.ajax({
+    type: 'GET',
+    url: currentCSV,
+    dataType: 'text',
+    success: function (csvData) {
+      csv2geojson.csv2geojson(
+        csvData,
+        {
+          latfield: 'Latitude',
+          lonfield: 'Longitude',
+          delimiter: ',',
+        },
+        (err, data) => {
+          data.features.forEach((data, i) => {
+            data.properties.id = i;
           });
-          const clickedPoint = features[0].geometry.coordinates;
-          flyToLocation(clickedPoint);
-          sortByDistance(clickedPoint);
-          createPopup(features[0]);
-        });
 
-        map.on('mouseenter', 'locationData', () => {
-          map.getCanvas().style.cursor = 'pointer';
-        });
+          geojsonData = data;
 
-        map.on('mouseleave', 'locationData', () => {
-          map.getCanvas().style.cursor = '';
-        });
+          // Add the layer to the map
+          map.addLayer({
+            id: layerId,
+            type: 'circle',
+            source: {
+              type: 'geojson',
+              data: geojsonData,
+            },
+            paint: {
+              'circle-radius': 5, // size of circles
+              'circle-color': '#3D2E5D', // color of circles
+              'circle-stroke-color': 'white',
+              'circle-stroke-width': 1,
+              'circle-opacity': 0.7,
+            },
+          });
+        },
+      );
 
-        buildLocationList(geojsonData);
-      },
-      error: function (request, status, error) {
-        console.log(request);
-        console.log(status);
-        console.log(error);
-      },
-    });
-  }
+      map.on('click', layerId, (e) => {
+        const features = map.queryRenderedFeatures(e.point, {
+          layers: [layerId],
+        });
+        const clickedPoint = features[0].geometry.coordinates;
+        flyToLocation(clickedPoint);
+        sortByDistance(clickedPoint);
+        createPopup(features[0]);
+      });
+
+      map.on('mouseenter', layerId, () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+
+      map.on('mouseleave', layerId, () => {
+        map.getCanvas().style.cursor = '';
+      });
+
+      buildLocationList(geojsonData);
+    },
+    error: function (request, status, error) {
+      console.log(request);
+      console.log(status);
+      console.log(error);
+    },
+  });
+ }
 
   let currentLayer = null;
 
@@ -539,7 +539,7 @@ map.on('load', () => {
       map.removeLayer(currentLayer);
       map.removeSource(currentLayer);
     }
-    makeGeoJSON(config.CSV);
+    makeGeoJSON(config.CSV, 'locationData1');
     currentLayer = 'locationData1';
   });
 
@@ -548,7 +548,7 @@ map.on('load', () => {
       map.removeLayer(currentLayer);
       map.removeSource(currentLayer);
     }
-   makeGeoJSON(config.CSV2);
+    makeGeoJSON(config.CSV2, 'locationData2');
     currentLayer = 'locationData2';
   });
   
@@ -579,5 +579,4 @@ function transformRequest(url) {
   return {
     url: isMapboxRequest ? url.replace('?', '?pluginName=finder&') : url,
   };
-}
 }
