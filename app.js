@@ -578,5 +578,5 @@ function transformRequest(url) {
     url.slice(10, 26) === 'tiles.mapbox.com';
   return {
     url: isMapboxRequest ? url.replace('?', '?pluginName=finder&') : url,
-  });
+  };
 }
