@@ -532,24 +532,25 @@ map.on('load', () => {
     });
   }
 
+  let currentLayer = null;
+
   $('#toggleButton1').click(() => {
-    
-    if (map.getSource('locationData')) {
-    map.removeLayer('locationData');
-    map.removeSource('locationData');
-  }
+    if (currentLayer) {
+      map.removeLayer(currentLayer);
+      map.removeSource(currentLayer);
+    }
     makeGeoJSON(config.CSV);
+    currentLayer = 'locationData1';
   });
-  
+
   $('#toggleButton2').click(() => {
-    
-    if (map.getSource('locationData')) {
-    map.removeLayer('locationData');
-    map.removeSource('locationData');
-  }
-    makeGeoJSON(config.CSV2);
+    if (currentLayer) {
+      map.removeLayer(currentLayer);
+      map.removeSource(currentLayer);
+    }
+   makeGeoJSON(config.CSV2);
+    currentLayer = 'locationData2';
   });
-});
   
   
 // Modal - popup for filtering results
