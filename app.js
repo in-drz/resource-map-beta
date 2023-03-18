@@ -553,7 +553,6 @@ map.on('load', () => {
   });
 
 });
-});
 
 // Modal - popup for filtering results
 const filterResults = document.getElementById('filterResults');
