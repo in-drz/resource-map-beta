@@ -46,7 +46,7 @@ function createPopup(currentFeature) {
     .setLngLat(currentFeature.geometry.coordinates)
     .setHTML('<h3>' + currentFeature.properties[config.popupInfo] + '</h3>' +
              '<p><b>Address:</strong> ' + currentFeature.properties.physical_address + '</p>' +
-             '<p><b>Phone:</b> ' + currentFeature.properties.phone_number + '</p>' + 
+             '<p><b>Phone:</b> ' + currentFeature.properties.phone_number + '</p>' +
              '<p><b>Max Distance Willing to Travel:</b> ' + currentFeature.properties.max_distance + '</p>')
     .addTo(map);
 }
@@ -424,7 +424,7 @@ function sortByDistance(selectedPoint) {
 geocoder.on('result', (ev) => {
   const searchResult = ev.result.geometry;
   sortByDistance(searchResult);
-  
+
  /* const options = { units: 'miles' };
   for (const store of stores.features) {
     store.properties.distance = turf.distance(
@@ -549,8 +549,8 @@ map.on('load', () => {
     currentLayer = 'locationData2';
   });
 });
+});
 
-  
 // Modal - popup for filtering results
 const filterResults = document.getElementById('filterResults');
 const exitButton = document.getElementById('exitButton');
