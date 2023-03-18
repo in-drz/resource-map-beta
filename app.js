@@ -532,7 +532,7 @@ $('#toggleButton1').click(() => {
   map.removeLayer('locationData');
   map.removeSource('locationData');
 }
-  makeGeoJSON(config.CSV);
+  makeGeoJSON(config.CSV, 'locationData1');
 });
 
 $('#toggleButton2').click(() => {
@@ -541,7 +541,7 @@ $('#toggleButton2').click(() => {
   map.removeLayer('locationData');
   map.removeSource('locationData');
 }
-  makeGeoJSON(config.CSV2);
+  makeGeoJSON(config.CSV2, 'locationData2');
 });
 
 });
