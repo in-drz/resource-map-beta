@@ -529,7 +529,7 @@ map.on('load', () => {
     });
   });
 
-  let currentLayer = 'locationData1';
+  let currentLayer = null;
 
   $('#toggleButton1').click(() => {
     if (currentLayer) {
@@ -566,7 +566,9 @@ exitButton.addEventListener('click', () => {
 });
 
 const title = document.getElementById('title');
-title.innerText = config.title;
+if (title !== null) {
+  title.innerText = config.title;
+}
 const description = document.getElementById('description');
 description.innerText = config.description;
 
