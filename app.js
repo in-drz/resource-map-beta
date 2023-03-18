@@ -524,25 +524,25 @@ map.on('load', () => {
     });
   });
 
-  let currentLayer = null;
+let currentLayer = null;
 
-  $('#toggleButton1').click(() => {
-    if (currentLayer) {
-      map.removeLayer('locationData1');
-      map.removeSource('locationData1');
-    }
-    makeGeoJSON(config.CSV, 'locationData1');
-    currentLayer = 'locationData1';
-  });
+$('#toggleButton1').click(() => {
 
-  $('#toggleButton2').click(() => {
-    if (currentLayer) {
-      map.removeLayer('locationData2');
-      map.removeSource('locationData2');
-    }
-    makeGeoJSON(config.CSV2, 'locationData2');
-    currentLayer = 'locationData2';
-  });
+  if (map.getSource('locationData')) {
+  map.removeLayer('locationData');
+  map.removeSource('locationData');
+}
+  makeGeoJSON(config.CSV);
+});
+
+$('#toggleButton2').click(() => {
+
+  if (map.getSource('locationData')) {
+  map.removeLayer('locationData');
+  map.removeSource('locationData');
+}
+  makeGeoJSON(config.CSV2);
+});
 
 });
 
