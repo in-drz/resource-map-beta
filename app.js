@@ -528,8 +528,8 @@ map.on('load', () => {
 
   $('#toggleButton1').click(() => {
     if (currentLayer) {
-      map.removeLayer(currentLayer);
-      map.removeSource(currentLayer);
+      map.removeLayer('locationData1');
+      map.removeSource('locationData1');
     }
     makeGeoJSON(config.CSV, 'locationData1');
     currentLayer = 'locationData1';
@@ -537,8 +537,8 @@ map.on('load', () => {
 
   $('#toggleButton2').click(() => {
     if (currentLayer) {
-      map.removeLayer(currentLayer);
-      map.removeSource(currentLayer);
+      map.removeLayer('locationData2');
+      map.removeSource('locationData2');
     }
     makeGeoJSON(config.CSV2, 'locationData2');
     currentLayer = 'locationData2';
