@@ -530,7 +530,7 @@ map.on('load', () => {
     });
   });
 
-  let currentLayer = null;
+ let currentLayer = null;
 
   $('#toggleButton1').click(() => {
     if (currentLayer) {
