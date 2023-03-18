@@ -441,7 +441,30 @@ map.on('load', () => {
   // csv2geojson - following the Sheet Mapper tutorial https://www.mapbox.com/impact-tools/sheet-mapper
   console.log('loaded');
 
-  function makeGeoJSON(csvData, layerId) {
+  
+
+  let currentLayer = null;
+
+  $('#toggleButton1').click(() => {
+    if (currentLayer) {
+      map.removeLayer(currentLayer);
+      map.removeSource(currentLayer);
+    }
+    makeGeoJSON(config.CSV, 'locationData1');
+    currentLayer = 'locationData1';
+  });
+
+  $('#toggleButton2').click(() => {
+    if (currentLayer) {
+      map.removeLayer(currentLayer);
+      map.removeSource(currentLayer);
+    }
+    makeGeoJSON(config.CSV2, 'locationData2');
+    currentLayer = 'locationData2';
+  });
+
+});
+function makeGeoJSON(csvData, layerId) {
     csv2geojson.csv2geojson(
       csvData,
       {
@@ -503,29 +526,6 @@ map.on('load', () => {
       }
     );
   }
-
-  let currentLayer = null;
-
-  $('#toggleButton1').click(() => {
-    if (currentLayer) {
-      map.removeLayer(currentLayer);
-      map.removeSource(currentLayer);
-    }
-    makeGeoJSON(config.CSV, 'locationData1');
-    currentLayer = 'locationData1';
-  });
-
-  $('#toggleButton2').click(() => {
-    if (currentLayer) {
-      map.removeLayer(currentLayer);
-      map.removeSource(currentLayer);
-    }
-    makeGeoJSON(config.CSV2, 'locationData2');
-    currentLayer = 'locationData2';
-  });
-
-});
-
 map.on('load', () => {
   map.addControl(geocoder, 'top-right');
 
