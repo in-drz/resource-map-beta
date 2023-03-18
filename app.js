@@ -463,6 +463,7 @@ map.on('load', () => {
       if (map.getSource(layerId)) {
         map.getSource(layerId).setData(data);
       } else {
+        console.log('Adding layer to map:', layerId);
         map.addLayer({
           id: layerId,
           type: 'circle',
