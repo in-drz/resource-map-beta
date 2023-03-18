@@ -442,67 +442,89 @@ map.on('load', () => {
   console.log('loaded');
 
   function makeGeoJSON(csvData, layerId) {
-  csv2geojson.csv2geojson(
-    csvData,
-    {
-      latfield: 'Latitude',
-      lonfield: 'Longitude',
-      delimiter: ',',
-    },
-    (err, data) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+    csv2geojson.csv2geojson(
+      csvData,
+      {
+        latfield: 'Latitude',
+        lonfield: 'Longitude',
+        delimiter: ',',
+      },
+      (err, data) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
 
-      data.features.forEach((feature, i) => {
-        feature.properties.id = i;
-      });
-
-      // Add the layer to the map
-      if (map.getSource(layerId)) {
-        map.getSource(layerId).setData(data);
-      } else {
-        console.log('Adding layer to map:', layerId);
-        map.addLayer({
-          id: layerId,
-          type: 'circle',
-          source: {
-            type: 'geojson',
-            data: data,
-          },
-          paint: {
-            'circle-radius': 5, // size of circles
-            'circle-color': '#3D2E5D', // color of circles
-            'circle-stroke-color': 'white',
-            'circle-stroke-width': 1,
-            'circle-opacity': 0.7,
-          },
+        data.features.forEach((feature, i) => {
+          feature.properties.id = i;
         });
-      }
 
-      map.on('click', layerId, (e) => {
-        const features = map.queryRenderedFeatures(e.point, {
-          layers: [layerId],
+        // Add the layer to the map
+        if (map.getSource(layerId)) {
+          map.getSource(layerId).setData(data);
+        } else {
+          console.log('Adding layer to map:', layerId);
+          map.addLayer({
+            id: layerId,
+            type: 'circle',
+            source: {
+              type: 'geojson',
+              data: data,
+            },
+            paint: {
+              'circle-radius': 5, // size of circles
+              'circle-color': '#3D2E5D', // color of circles
+              'circle-stroke-color': 'white',
+              'circle-stroke-width': 1,
+              'circle-opacity': 0.7,
+            },
+          });
+        }
+
+        map.on('click', layerId, (e) => {
+          const features = map.queryRenderedFeatures(e.point, {
+            layers: [layerId],
+          });
+          const clickedPoint = features[0].geometry.coordinates;
+          flyToLocation(clickedPoint);
+          sortByDistance(clickedPoint);
+          createPopup(features[0]);
         });
-        const clickedPoint = features[0].geometry.coordinates;
-        flyToLocation(clickedPoint);
-        sortByDistance(clickedPoint);
-        createPopup(features[0]);
-      });
 
-      map.on('mouseenter', layerId, () => {
-        map.getCanvas().style.cursor = 'pointer';
-      });
+        map.on('mouseenter', layerId, () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
 
-      map.on('mouseleave', layerId, () => {
-        map.getCanvas().style.cursor = '';
-      });
+        map.on('mouseleave', layerId, () => {
+          map.getCanvas().style.cursor = '';
+        });
 
-      buildLocationList(data);
+        buildLocationList(data);
+      }
+    );
+  }
+
+  let currentLayer = null;
+
+  $('#toggleButton1').click(() => {
+    if (currentLayer) {
+      map.removeLayer(currentLayer);
+      map.removeSource(currentLayer);
     }
-  );
-}
+    makeGeoJSON(config.CSV, 'locationData1');
+    currentLayer = 'locationData1';
+  });
+
+  $('#toggleButton2').click(() => {
+    if (currentLayer) {
+      map.removeLayer(currentLayer);
+      map.removeSource(currentLayer);
+    }
+    makeGeoJSON(config.CSV2, 'locationData2');
+    currentLayer = 'locationData2';
+  });
+
+});
 
 map.on('load', () => {
   map.addControl(geocoder, 'top-right');
@@ -530,25 +552,6 @@ map.on('load', () => {
     });
   });
 
- let currentLayer = null;
-
-  $('#toggleButton1').click(() => {
-    if (currentLayer) {
-      map.removeLayer(currentLayer);
-      map.removeSource(currentLayer);
-    }
-    makeGeoJSON(config.CSV, 'locationData1');
-    currentLayer = 'locationData1';
-  });
-
-  $('#toggleButton2').click(() => {
-    if (currentLayer) {
-      map.removeLayer(currentLayer);
-      map.removeSource(currentLayer);
-    }
-    makeGeoJSON(config.CSV2, 'locationData2');
-    currentLayer = 'locationData2';
-  });
 });
 });
 
