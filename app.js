@@ -566,7 +566,7 @@ exitButton.addEventListener('click', () => {
 });
 
 const title = document.getElementById('title');
-title.innerText = config.title;
+title?.innerText = config.title;
 const description = document.getElementById('description');
 description.innerText = config.description;
 
