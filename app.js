@@ -45,8 +45,9 @@ function createPopup(currentFeature) {
   new mapboxgl.Popup({ closeOnClick: true })
     .setLngLat(currentFeature.geometry.coordinates)
     .setHTML('<h3>' + currentFeature.properties[config.popupInfo] + '</h3>' +
-             '<p><b>Address:</strong> ' + currentFeature.properties.physical_address + '</p>' +
+             '<p><b>Address:</b> ' + currentFeature.properties.physical_address + '</p>' +
              '<p><b>Phone:</b> ' + currentFeature.properties.phone_number + '</p>' +
+             '<p><b>Pick-Up/Drop-Off?</b> ' + currentFeature.properties.pick_up + '</p>' +
              '<p><b>Max Distance Willing to Travel:</b> ' + currentFeature.properties.max_distance + '</p>')
     .addTo(map);
 }
