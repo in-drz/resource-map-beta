@@ -47,7 +47,7 @@ function createPopup(currentFeature) {
     .setHTML('<h3>' + currentFeature.properties[config.popupInfo] + '</h3>' +
              '<p><b>Address:</b> ' + currentFeature.properties.physical_address + '</p>' +
              '<p><b>Phone:</b> ' + currentFeature.properties.phone_number + '</p>' +
-             '<p><b>Pick-Up/Drop-Off?</b> ' + currentFeature.properties.pick_up + 'mi </p>' +
+             '<p><b>Pick-Up/Drop-Off?</b> ' + currentFeature.properties.pick_up + 'mi</p>' +
              '<p><b>Max Distance Willing to Travel:</b> ' + currentFeature.properties.max_distance + '</p>')
     .addTo(map);
 }
