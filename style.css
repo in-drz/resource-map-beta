@@ -123,13 +123,42 @@
 
 .mapboxgl-popup-content {
   font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
-  text-align: left; /* Adjust as needed */
-  padding: 20px; /* Adjust as needed */
-  max-width: 80%; /* Adjust as needed */
-  background-color: #F9D50B; /* Match your theme background color */
-  color: #2A395F; /* Match your theme text color */
-  border-radius: 10px; /* Add border radius */
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5); /* Add box shadow */
+  text-align: left;
+  padding: 20px;
+  max-width: 80%;
+  background-color: #F9D50B;
+  color: #2A395F;
+  border-radius: 10px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+}
+
+.mapboxgl-popup-content button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #fff;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  margin-bottom: 8px;
+}
+
+.mapboxgl-popup-content button:hover {
+  background-color: #f4f4f4;
+  border-color: #bbb;
+}
+
+.mapboxgl-popup-content button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
 }
 
 .mapboxgl-popup-close-button {
@@ -140,12 +169,12 @@
 }
 
 .mapboxgl-popup-content h3 {
-  font-weight: 600; /* Adjust font weight */
-  margin-bottom: 8px; /* Adjust margin */
-  color: black; /* Match your theme text color */
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: black;
 }
 
 .mapboxgl-popup-content p {
-  margin: 0; /* Remove default margin */
-  color: black; /* Match your theme text color */
+  margin: 0;
+  color: black;
 }
