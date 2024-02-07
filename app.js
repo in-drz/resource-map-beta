@@ -30,6 +30,32 @@ map.addControl(
   })
 );
 
+filterResults.addEventListener('click', () => {
+  modal.classList.remove('hide-visually');
+  modal.classList.add('z5'); // Adjust z-index as needed
+});
+
+exitButton.addEventListener('click', () => {
+  modal.classList.add('hide-visually');
+});
+
+// Add event listeners for the "Yes" and "No" buttons
+const yesButton = document.getElementById('yesButton');
+const noButton = document.getElementById('noButton');
+
+yesButton.addEventListener('click', () => {
+  // Handle when user clicks "Yes"
+  // For example, show a message indicating that help is on the way
+  alert("Help is on the way!");
+  modal.classList.add('hide-visually');
+});
+
+noButton.addEventListener('click', () => {
+  // Handle when user clicks "No"
+  // For example, close the modal without taking any action
+  modal.classList.add('hide-visually');
+});
+
 
 function flyToLocation(currentFeature) {
   map.flyTo({
@@ -425,7 +451,7 @@ function sortByDistance(selectedPoint) {
 geocoder.on('result', (ev) => {
   const searchResult = ev.result.geometry;
   sortByDistance(searchResult);
-  
+
  /* const options = { units: 'miles' };
   for (const store of stores.features) {
     store.properties.distance = turf.distance(
@@ -441,13 +467,13 @@ map.on('load', () => {
 
   // csv2geojson - following the Sheet Mapper tutorial https://www.mapbox.com/impact-tools/sheet-mapper
   console.log('loaded');
-  
-  
+
+
   $(document).ready(() => {
-    
+
     console.log('ready');
     let currentCSV = config.CSV;
-    
+
     $.ajax({
       type: 'GET',
       url: config.CSV,
@@ -462,8 +488,8 @@ map.on('load', () => {
       },
     });
   });
-  
-  
+
+
   makeGeoJSON(config.CSV);
 
   function makeGeoJSON(currentCSV) {
@@ -534,16 +560,16 @@ map.on('load', () => {
   }
 
   $('#toggleButton1').click(() => {
-    
+
     if (map.getSource('locationData')) {
     map.removeLayer('locationData');
     map.removeSource('locationData');
   }
     makeGeoJSON(config.CSV);
   });
-  
+
   $('#toggleButton2').click(() => {
-    
+
     if (map.getSource('locationData')) {
     map.removeLayer('locationData');
     map.removeSource('locationData');
@@ -551,8 +577,8 @@ map.on('load', () => {
     makeGeoJSON(config.CSV2);
   });
 });
-  
-  
+
+
 // Modal - popup for filtering results
 const filterResults = document.getElementById('filterResults');
 const exitButton = document.getElementById('exitButton');
