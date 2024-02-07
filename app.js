@@ -30,32 +30,32 @@ map.addControl(
   })
 );
 
-filterResults.addEventListener('click', () => {
-  modal.classList.remove('hide-visually');
-  modal.classList.add('z5'); // Adjust z-index as needed
+// Add event listeners for the option buttons
+const needHelpButton = document.getElementById('needHelpButton');
+const wantToHelpButton = document.getElementById('wantToHelpButton');
+
+needHelpButton.addEventListener('click', () => {
+    // Handle "I need help" option
+    showMap();
 });
 
-exitButton.addEventListener('click', () => {
-  modal.classList.add('hide-visually');
+wantToHelpButton.addEventListener('click', () => {
+    // Handle "I want to help" option
+    showMap();
 });
 
-// Add event listeners for the "Yes" and "No" buttons
-const yesButton = document.getElementById('yesButton');
-const noButton = document.getElementById('noButton');
+function showMap() {
+    // Hide the intro screen
+    const introScreen = document.getElementById('introScreen');
+    introScreen.style.display = 'none';
 
-yesButton.addEventListener('click', () => {
-  // Handle when user clicks "Yes"
-  // For example, show a message indicating that help is on the way
-  alert("Help is on the way!");
-  modal.classList.add('hide-visually');
-});
+    // Show the map container and other necessary elements
+    const mapContainer = document.getElementById('map');
+    mapContainer.style.display = 'block';
 
-noButton.addEventListener('click', () => {
-  // Handle when user clicks "No"
-  // For example, close the modal without taking any action
-  modal.classList.add('hide-visually');
-});
-
+    // Initialize the map or perform any necessary actions
+    // Example: map.resize();
+}
 
 function flyToLocation(currentFeature) {
   map.flyTo({

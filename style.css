@@ -1,3 +1,7 @@
+#map {
+    display: none;
+}
+
 #sidebarA{
     color: black;
 }
@@ -123,6 +127,3 @@
     display: block;
 
   }
-
-
-  
