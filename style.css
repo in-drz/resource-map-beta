@@ -109,29 +109,43 @@
     visibility: hidden;
 }
 
+.mapboxgl-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Adjust z-index as needed to ensure it appears above other content */
+}
+
 .mapboxgl-popup-content {
-    font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
-    text-align: left; /* Adjust as needed */
-    padding: 10px; /* Adjust as needed */
-    width: auto; /* Adjust as needed */
-    max-width: 250px; /* Adjust as needed */
-    background-color: #F9D50B; /* Match your theme background color */
-    color: #2A395F; /* Match your theme text color */
-    border-radius: 5px; /* Add border radius */
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Add box shadow */
-  }
+  font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+  text-align: left; /* Adjust as needed */
+  padding: 20px; /* Adjust as needed */
+  max-width: 80%; /* Adjust as needed */
+  background-color: #F9D50B; /* Match your theme background color */
+  color: #2A395F; /* Match your theme text color */
+  border-radius: 10px; /* Add border radius */
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5); /* Add box shadow */
+}
 
 .mapboxgl-popup-close-button {
-    display: none;
-  }
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
 
-  .mapboxgl-popup-content h3 {
-      font-weight: 600; /* Adjust font weight */
-      margin-bottom: 8px; /* Adjust margin */
-      color: black; /* Match your theme text color */
-  }
+.mapboxgl-popup-content h3 {
+  font-weight: 600; /* Adjust font weight */
+  margin-bottom: 8px; /* Adjust margin */
+  color: black; /* Match your theme text color */
+}
 
-  .mapboxgl-popup-content p {
-      margin: 0; /* Remove default margin */
-      color: black; /* Match your theme text color */
-  }
+.mapboxgl-popup-content p {
+  margin: 0; /* Remove default margin */
+  color: black; /* Match your theme text color */
+}
