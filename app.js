@@ -49,14 +49,14 @@ function showMap() {
     const introScreen = document.getElementById('introScreen');
     introScreen.style.display = 'none';
 
-    // Show the map container and other necessary elements
+    // Show the map container
     const mapContainer = document.getElementById('map');
     mapContainer.style.display = 'block';
     mapContainer.style.width = '100%'; // Adjust width as needed
     mapContainer.style.height = '80vh'; // Adjust height as needed
 
-    // Initialize the map or perform any necessary actions
-    // Example: map.resize();
+    // Resize the map to fit the new dimensions
+    map.resize();
 }
 
 function flyToLocation(currentFeature) {
