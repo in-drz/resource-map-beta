@@ -52,6 +52,8 @@ function showMap() {
     // Show the map container and other necessary elements
     const mapContainer = document.getElementById('map');
     mapContainer.style.display = 'block';
+    mapContainer.style.width = '100%'; // Adjust width as needed
+    mapContainer.style.height = '80vh'; // Adjust height as needed
 
     // Initialize the map or perform any necessary actions
     // Example: map.resize();
