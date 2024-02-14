@@ -53,61 +53,7 @@ function createPopup(currentFeature) {
     .addTo(map);
 }
 
-function buildLocationList(locationData) {
-  const listings = document.getElementById('listings');
-  listings.innerHTML = '';
-  locationData.features.forEach((location, i) => {
-    const prop = location.properties;
 
-    const listing = listings.appendChild(document.createElement('div'));
-    listing.id = 'listing-' + prop.id;
-    listing.className = 'item';
-
-    const link = listing.appendChild(document.createElement('button'));
-    link.className = 'title';
-    link.id = 'link-' + prop.id;
-    link.innerHTML =
-      '<p style="line-height: 1.25">' + prop[columnHeaders[0]] + '</p>';
-
-    const details = listing.appendChild(document.createElement('div'));
-    details.className = 'content';
-
-    for (let i = 1; i < columnHeaders.length; i++) {
-      const div = document.createElement('div');
-      div.innerText += prop[columnHeaders[i]];
-      details.appendChild(div);
-    }
-
-    link.addEventListener('click', function () {
-      const clickedListing = location.geometry.coordinates;
-      flyToLocation(clickedListing);
-      createPopup(location);
-
-      const activeItem = document.getElementsByClassName('active');
-      if (activeItem[0]) {
-        activeItem[0].classList.remove('active');
-      }
-      this.parentNode.classList.add('active');
-
-      const divList = document.querySelectorAll('.content');
-      const divCount = divList.length;
-      for (let i = 0; i < divCount; i++) {
-        divList[i].style.maxHeight = null;
-      }
-
-      for (let i = 0; i < geojsonData.features.length; i++) {
-        this.parentNode.classList.remove('active');
-        this.classList.toggle('active');
-        const content = this.nextElementSibling;
-        if (content.style.maxHeight) {
-          content.style.maxHeight = null;
-        } else {
-          content.style.maxHeight = content.scrollHeight + 'px';
-        }
-      }
-    });
-  });
-}
 
 const geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
@@ -248,13 +194,68 @@ map.on('load', () => {
   addGeoJSONLayer(geojsonData);
 }
 
+function buildLocationList(locationData) {
+  const listings = document.getElementById('listings');
+  listings.innerHTML = '';
+  locationData.features.forEach((location, i) => {
+    const prop = location.properties;
+
+    const listing = listings.appendChild(document.createElement('div'));
+    listing.id = 'listing-' + prop.id;
+    listing.className = 'item';
+
+    const link = listing.appendChild(document.createElement('button'));
+    link.className = 'title';
+    link.id = 'link-' + prop.id;
+    link.innerHTML =
+      '<p style="line-height: 1.25">' + prop[columnHeaders[0]] + '</p>';
+
+    const details = listing.appendChild(document.createElement('div'));
+    details.className = 'content';
+
+    for (let i = 1; i < columnHeaders.length; i++) {
+      const div = document.createElement('div');
+      div.innerText += prop[columnHeaders[i]];
+      details.appendChild(div);
+    }
+
+    link.addEventListener('click', function () {
+      const clickedListing = location.geometry.coordinates;
+      flyToLocation(clickedListing);
+      createPopup(location);
+
+      const activeItem = document.getElementsByClassName('active');
+      if (activeItem[0]) {
+        activeItem[0].classList.remove('active');
+      }
+      this.parentNode.classList.add('active');
+
+      const divList = document.querySelectorAll('.content');
+      const divCount = divList.length;
+      for (let i = 0; i < divCount; i++) {
+        divList[i].style.maxHeight = null;
+      }
+
+      for (let i = 0; i < geojsonData.features.length; i++) {
+        this.parentNode.classList.remove('active');
+        this.classList.toggle('active');
+        const content = this.nextElementSibling;
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }
+      }
+    });
+  });
+}
 
   // Function to display error message
   function displayErrorMessage(message) {
     // You can implement how you want to display the error message to the user
     alert(message);
   }
-  
+
   const existingSource = map.getSource('locationData');
       if (existingSource) {
         // Remove the existing source
