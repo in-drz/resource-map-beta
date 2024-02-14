@@ -385,7 +385,7 @@ document.getElementById('weatherToggle').addEventListener('change', function() {
       source: {
         type: 'raster',
         tiles: [
-          'http://api.openweathermap.org/data/2.5/forecast?id=524901&appid=13b7a33f1b10f254853164c4b2d67c71',
+          'https://api.openweathermap.org/data/3.0/onecall?lat=34.049157&lon=-118.254643&exclude={part}&appid=13b7a33f1b10f254853164c4b2d67c71',
         ],
         tileSize: 256,
       },
