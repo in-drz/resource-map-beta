@@ -338,21 +338,24 @@ $('#menu-toggle').on('click', function(e) {
 
 // Function to add GeoJSON layer to the map
 function addGeoJSONLayer() {
-    // Check if the layer already exists and remove it before adding a new one
+    // Check if the source already exists
     if (map.getSource('geojsonData')) {
-        map.removeSource('geojsonData');
+        // Update the existing source with new data
+        map.getSource('geojsonData').setData(geojsonData);
+    } else {
+        // Add the source if it doesn't exist
+        map.addSource('geojsonData', {
+            type: 'geojson',
+            data: geojsonData,
+        });
     }
-
-    map.addSource('geojsonData', {
-        type: 'geojson',
-        data: geojsonData,
-    });
 
     // Check if the layer already exists and remove it before adding a new one
     if (map.getLayer('locationData')) {
         map.removeLayer('locationData');
     }
 
+    // Add the layer using the source
     map.addLayer({
         id: 'locationData',
         type: 'circle',
@@ -369,6 +372,7 @@ function addGeoJSONLayer() {
     // Set up event listeners for interacting with the map data
     setMapEventListeners();
 }
+
 
 // Event listener for weather toggle checkbox
 document.getElementById('weatherToggle').addEventListener('change', function() {
