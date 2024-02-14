@@ -4,31 +4,21 @@
     height: 400px; /* or specify a fixed height */
 }
 
-#sidebarA {
+.theme, .select, #filterResults, .mapboxgl-ctrl-geocoder--input, .listings .item, .listings .item .title {
     color: black;
 }
 
-.theme {
+.theme, .select, .mapboxgl-ctrl-geocoder--input {
     background-color: #F9D50B;
-    color: black; /* Change text color to black */
 }
 
 .select {
     font-style: italic;
     opacity: .7;
-    color: black; /* Change text color to black */
 }
 
-#filterResults {
-    font-size: 12px;
-    color: white;
-    background-color: #000000;
-}
-
-.mapboxgl-ctrl-geocoder--input {
-    padding: 6px 30px;
-    margin-left: 5px;
-    color: black; /* Change text color to black */
+.listings .item, .listings .item .title {
+    color: #2A395F; /* Change text color to your preferred color */
 }
 
 .listings .item {
@@ -36,20 +26,10 @@
     word-wrap: break-word;
     text-decoration: none;
     border-bottom: solid rgb(34, 33, 33, .3) 1px;
-    color: #2A395F; /* Change text color to your preferred color */
 }
 
 .listings .item:last-child {
     border-bottom: none;
-}
-
-.listings .item .title {
-    display: inline-block;
-    width: 100%;
-    color: #2A395F;
-    font-weight: 800;
-    margin-top: 5px;
-    text-decoration: none;
 }
 
 /* Scrollbar */
@@ -60,17 +40,9 @@
     background: rgba(0, 0, 0, 0.1);
 }
 
-::-webkit-scrollbar-track {
-    background: none;
-}
-
 ::-webkit-scrollbar-thumb {
     border-radius: 0;
     background: #2A395F;
-}
-
-.clearfix {
-    display: block;
 }
 
 .clearfix::after {
@@ -141,14 +113,7 @@
     cursor: pointer;
 }
 
-.mapboxgl-popup-content h3 {
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: black;
-}
-
-.mapboxgl-popup-content p {
-    margin: 0;
+.mapboxgl-popup-content h3, .mapboxgl-popup-content p {
     color: black;
 }
 
@@ -170,12 +135,6 @@
     flex-shrink: 0; /* Prevent sidebar from shrinking */
 }
 
-#map {
-    flex: 1;
-    height: 100%;
-    width: 100%;
-}
-
 /* Collapsed state for the sidebar */
 #sidebarB.collapsed {
     width: 0;
@@ -193,5 +152,6 @@
 #sidebarB h3 {
     margin-top: 0;
 }
+
 
 /* Add more styles as needed */
