@@ -147,6 +147,105 @@ geocoder.on('result', (ev) => {
 
 map.on('load', () => {
   map.addControl(geocoder, 'top-right');
+
+  // csv2geojson - following the Sheet Mapper tutorial https://www.mapbox.com/impact-tools/sheet-mapper
+  console.log('loaded');
+
+
+  $(document).ready(() => {
+
+    console.log('ready');
+    let currentCSV = config.CSV;
+
+    $.ajax({
+      type: 'GET',
+      url: config.CSV,
+      dataType: 'text',
+      success: function (csvData) {
+        makeGeoJSON(csvData);
+      },
+      error: function (request, status, error) {
+        console.log(request);
+        console.log(status);
+        console.log(error);
+      },
+    });
+  });
+
+
+  makeGeoJSON(config.CSV);
+
+  function makeGeoJSON(currentCSV) {
+    $.ajax({
+      type: 'GET',
+      url: currentCSV,
+      dataType: 'text',
+      success: function (csvData) {
+        csv2geojson.csv2geojson(
+          csvData,
+          {
+            latfield: 'Latitude',
+            lonfield: 'Longitude',
+            delimiter: ',',
+          },
+          (err, data) => {
+            data.features.forEach((data, i) => {
+              data.properties.id = i;
+            });
+
+            geojsonData = data;
+
+            // Add the layer to the map
+            map.addLayer({
+              id: 'locationData',
+              type: 'circle',
+              source: {
+                type: 'geojson',
+                data: geojsonData,
+              },
+              paint: {
+                'circle-radius': 5, // size of circles
+                'circle-color': '#3D2E5D', // color of circles
+                'circle-stroke-color': 'white',
+                'circle-stroke-width': 1,
+                'circle-opacity': 0.7,
+              },
+            });
+          },
+        );
+
+        map.on('click', 'locationData', (e) => {
+          const features = map.queryRenderedFeatures(e.point, {
+            layers: ['locationData'],
+          });
+          const clickedPoint = features[0].geometry.coordinates;
+          flyToLocation(clickedPoint);
+          sortByDistance(clickedPoint);
+          createPopup(features[0]);
+        });
+
+        map.on('mouseenter', 'locationData', () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+
+        map.on('mouseleave', 'locationData', () => {
+          map.getCanvas().style.cursor = '';
+        });
+
+        buildLocationList(geojsonData);
+      },
+      error: function (request, status, error) {
+        console.log(request);
+        console.log(status);
+        console.log(error);
+      },
+    });
+  }
+
+});
+
+map.on('load', () => {
+  map.addControl(geocoder, 'top-right');
   console.log('loaded');
   makeGeoJSON(config.CSV1); // Load CSV1 when the map is loaded
 });
