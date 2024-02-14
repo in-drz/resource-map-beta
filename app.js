@@ -151,46 +151,47 @@ map.on('load', () => {
 
     // Iterate over each row of the CSV data
     for (let i = 0; i < rows.length; i++) {
-      const row = rows[i];
+        const row = rows[i];
 
-      // Split the row into columns
-      const columns = row.split(',');
+        // Split the row into columns
+        const columns = row.split(',');
 
-      // Check if the row has at least two columns and latitude and longitude are not empty
-      if (columns.length >= 2 && columns[13].trim() !== '' && columns[14].trim() !== '') {
-        // Parse latitude and longitude values
-        const latitude = parseFloat(columns[13].trim());
-        const longitude = parseFloat(columns[14].trim());
+        // Check if the row has at least two columns and latitude and longitude are not empty or undefined
+        if (columns.length >= 2 && columns[13]?.trim() !== '' && columns[14]?.trim() !== '') {
+            // Parse latitude and longitude values
+            const latitude = parseFloat(columns[13].trim());
+            const longitude = parseFloat(columns[14].trim());
 
-        // Check if latitude and longitude values are valid numbers
-        if (!isNaN(latitude) && !isNaN(longitude)) {
-          // Create a GeoJSON feature
-          const feature = {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [longitude, latitude], // longitude, latitude
-            },
-            properties: {
-              id: i,
-            },
-          };
+            // Check if latitude and longitude values are valid numbers
+            if (!isNaN(latitude) && !isNaN(longitude)) {
+                // Create a GeoJSON feature
+                const feature = {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [longitude, latitude], // longitude, latitude
+                    },
+                    properties: {
+                        id: i,
+                    },
+                };
 
-          // Add the feature to the array
-          features.push(feature);
+                // Add the feature to the array
+                features.push(feature);
+            }
         }
-      }
     }
 
     // Create a GeoJSON object from the features
     geojsonData = {
-      type: 'FeatureCollection',
-      features: features,
+        type: 'FeatureCollection',
+        features: features,
     };
 
     // Add the GeoJSON layer to the map
     addGeoJSONLayer();
-  }
+}
+
 
   // Function to add GeoJSON layer to the map
   function addGeoJSONLayer() {
