@@ -213,6 +213,13 @@ map.on('load', () => {
           return;
         }
 
+        // Filter out features with empty latitude or longitude values
+        data.features = data.features.filter(feature => {
+          const latitude = feature.geometry.coordinates[1];
+          const longitude = feature.geometry.coordinates[0];
+          return latitude !== undefined && longitude !== undefined;
+        });
+
         // Add unique IDs to GeoJSON features
         data.features.forEach((feature, i) => {
           feature.properties.id = i;
