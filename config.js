@@ -4,7 +4,7 @@
 const config = {
   style: 'mapbox://styles/mapbox/light-v11',
   accessToken:
-    'pk.eyJ1IjoiaW4tZHJ6IiwiYSI6ImNsZXhxdWNmOTFxZDQzdnFvYmRhdHl0czQifQ.fJZWF9JhBmdx-DbEY4deow',
+    'pk.eyJ1IjoiaW4tZHJ6IiwiYSI6ImNsYXU3NHhkdTAzazc0MW8xZjQ5ejZjNDEifQ.xRbArzmVm5z8rQVj5oI4Qg',
   CSV1: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=charging_locations',
   CSV2: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=fridge_list',
   CSV3: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=mutual_aid_groups',
