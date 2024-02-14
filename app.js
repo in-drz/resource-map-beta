@@ -6,6 +6,15 @@ mapboxgl.accessToken = config.accessToken;
 const columnHeaders = config.sideBarInfo;
 let geojsonData = {}; // Define geojsonData as a global variable
 
+function transformRequest(url) {
+  const isMapboxRequest =
+    url.slice(8, 22) === 'api.mapbox.com' ||
+    url.slice(10, 26) === 'tiles.mapbox.com';
+  return {
+    url: isMapboxRequest ? url.replace('?', '?pluginName=finder&') : url,
+};
+}
+
 const map = new mapboxgl.Map({
   container: 'map',
   style: config.style,
@@ -174,14 +183,7 @@ map.on('load', () => {
   }
 
   // Function to make GeoJSON from CSV data
-  function transformRequest(url) {
-    const isMapboxRequest =
-      url.slice(8, 22) === 'api.mapbox.com' ||
-      url.slice(10, 26) === 'tiles.mapbox.com';
-    return {
-      url: isMapboxRequest ? url.replace('?', '?pluginName=finder&') : url,
-  };
-}
+
 
   function makeGeoJSON(csvData) {
     csv2geojson.csv2geojson(
