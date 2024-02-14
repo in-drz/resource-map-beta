@@ -158,9 +158,6 @@ map.on('load', () => {
   map.addControl(geocoder, 'top-right');
   console.log('loaded');
 
-  // Load initial CSV when the map is loaded
-  loadCsv(config.CSV1);
-
   // Event listener for CSV dropdown change
   document.getElementById('csvDropdown').addEventListener('change', function() {
     const selectedCsv = this.value;
@@ -183,8 +180,6 @@ map.on('load', () => {
   }
 
   // Function to make GeoJSON from CSV data
-
-
   function makeGeoJSON(csvData) {
     csv2geojson.csv2geojson(
       csvData,
@@ -227,10 +222,17 @@ map.on('load', () => {
           const features = map.queryRenderedFeatures(e.point, {
             layers: ['locationData'],
           });
+          if (!features.length) {
+            return;
+          }
           const clickedPoint = features[0].geometry.coordinates;
           flyToLocation(clickedPoint);
-          sortByDistance(clickedPoint);
           createPopup(features[0]);
+          const activeListing = document.getElementById(
+            'listing-' + features[0].properties.id
+          );
+          $(activeListing).addClass('active');
+          $(activeListing).siblings().removeClass('active');
         });
 
         map.on('mouseenter', 'locationData', () => {
@@ -245,4 +247,13 @@ map.on('load', () => {
       }
     );
   }
+
+  // Initialize with the default CSV
+  loadCsv(config.CSV1);
+});
+
+// Function to toggle sidebar visibility
+$('#menu-toggle').on('click', function(e) {
+  e.preventDefault();
+  $('#wrapper').toggleClass('toggled');
 });
