@@ -113,7 +113,7 @@
 #sidebarB {
     width: 300px;
     height: 100%;
-    background-color: #ffffff;
+    background-color: #F9D50B; /* Yellow color */
     border-right: 1px solid #ccc;
     overflow: auto;
     transition: width 0.3s ease;
@@ -139,36 +139,36 @@
 }
 
 #csvDropdown {
-  width: 100%;
-  padding: 12px; /* Increase padding for better touch support */
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
-  font-size: 16px;
-  color: #333;
+    width: 100%;
+    padding: 12px; /* Increase padding for better touch support */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    font-size: 16px;
+    color: #333;
 }
 
 #csvDropdown option {
-  background-color: #fff;
-  color: #333;
+    background-color: #fff;
+    color: #333;
 }
 
 /* Style the dropdown arrow */
 #csvDropdown::after {
-  content: '\25BC';
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
+    content: '\25BC';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
 }
 
 /* Style the dropdown arrow when dropdown is open */
 #csvDropdown.open::after {
-  content: '\25B2';
+    content: '\25B2';
 }
 
 /* Style the dropdown when it is open */
 #csvDropdown.open {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
