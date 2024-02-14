@@ -205,7 +205,7 @@ map.on('load', () => {
     // Filter out rows with empty latitude or longitude
     const filteredRows = rows.filter(row => {
       const columns = row.split(',');
-      return columns.length >= 2 && columns[0].trim() !== '' && columns[1].trim() !== '';
+      return columns.length >= 2 && columns[13].trim() !== '' && columns[14].trim() !== '';
     });
 
     // Reconstruct CSV data without empty latitude or longitude rows
