@@ -608,3 +608,55 @@ function transformRequest(url) {
     url: isMapboxRequest ? url.replace('?', '?pluginName=finder&') : url,
   };
 }
+document.getElementById('csvDropdown').addEventListener('change', function() {
+  const selectedCsv = this.value;
+  loadCsv(selectedCsv);
+});
+
+function loadCsv(csvPath) {
+  $.ajax({
+    type: 'GET',
+    url: csvPath,
+    dataType: 'text',
+    success: function(csvData) {
+      makeGeoJSON(csvData);
+    },
+    error: function(request, status, error) {
+      console.error('Error loading CSV:', error);
+    }
+  });
+}
+
+function makeGeoJSON(currentCSV) {
+  // Same as before
+  // Update this function to handle multiple CSV layers with different colors
+}
+
+// When adding layers to the map, specify different colors for each CSV
+map.addLayer({
+  id: 'locationData-' + csvPath, // Unique layer ID for each CSV
+  type: 'circle',
+  source: {
+    type: 'geojson',
+    data: geojsonData,
+  },
+  paint: {
+    'circle-radius': 5,
+    // Apply different colors based on CSV
+    'circle-color': getCsvColor(csvPath),
+    'circle-stroke-color': 'white',
+    'circle-stroke-width': 1,
+    'circle-opacity': 0.7,
+  },
+});
+
+function getCsvColor(csvPath) {
+  // Define a mapping of CSV paths to colors
+  const colorMap = {
+    'path/to/csv1.csv': '#ff0000', // Red
+    'path/to/csv2.csv': '#00ff00', // Green
+    // Add more mappings for additional CSVs
+  };
+  // Return the color for the given CSV path
+  return colorMap[csvPath] || '#000000'; // Default to black if color not found
+}
