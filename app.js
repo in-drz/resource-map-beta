@@ -159,6 +159,22 @@ map.on('load', () => {
   map.addControl(geocoder, 'top-right');
   console.log('Map loaded');
 
+  // Populate the CSV dropdown
+  populateCsvDropdown();
+
+  // Function to populate the CSV dropdown
+  function populateCsvDropdown() {
+    const dropdown = document.getElementById('csvDropdown');
+    Object.keys(config).forEach(key => {
+      if (key.startsWith('CSV')) { // Check if the key starts with 'CSV'
+        const option = document.createElement('option');
+        option.value = config[key];
+        option.textContent = key;
+        dropdown.appendChild(option);
+      }
+    });
+  }
+
   // Event listener for CSV dropdown change
   document.getElementById('csvDropdown').addEventListener('change', function() {
     const selectedCsv = this.value;
@@ -176,7 +192,7 @@ map.on('load', () => {
       },
       error: function(request, status, error) {
         console.error('Error loading CSV:', error);
-        // Optionally, display an error message to the user
+        displayErrorMessage('Error loading CSV. Please try again.');
       }
     });
   }
@@ -193,7 +209,7 @@ map.on('load', () => {
       (err, data) => {
         if (err) {
           console.error('Error converting CSV to GeoJSON:', err);
-          // Optionally, display an error message to the user
+          displayErrorMessage('Error converting CSV to GeoJSON.');
           return;
         }
 
@@ -210,8 +226,19 @@ map.on('load', () => {
     );
   }
 
+  // Function to display error message
+  function displayErrorMessage(message) {
+    // You can implement how you want to display the error message to the user
+    alert(message);
+  }
+
   // Function to add GeoJSON layer to the map
   function addGeoJSONLayer() {
+    // Check if the layer already exists and remove it before adding a new one
+    if (map.getLayer('locationData')) {
+      map.removeLayer('locationData');
+    }
+
     map.addLayer({
       id: 'locationData',
       type: 'circle',
@@ -265,20 +292,6 @@ map.on('load', () => {
     buildLocationList(geojsonData);
   }
 
-  // Populate the CSV dropdown
-  populateCsvDropdown();
-
-  // Function to populate the CSV dropdown
-  function populateCsvDropdown() {
-    const dropdown = document.getElementById('csvDropdown');
-    Object.keys(config).forEach(key => {
-      const option = document.createElement('option');
-      option.value = config[key];
-      option.textContent = key;
-      dropdown.appendChild(option);
-    });
-  }
-
   // Add event listeners for sidebar toggle arrows
   document.getElementById('toggleLeft').addEventListener('click', function () {
     document.getElementById('sidebarB').classList.add('collapsed');
@@ -291,6 +304,7 @@ map.on('load', () => {
   // Load the default CSV
   loadCsv(config.CSV1);
 });
+
 
 // Function to toggle sidebar visibility
 $('#menu-toggle').on('click', function(e) {
