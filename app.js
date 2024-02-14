@@ -199,8 +199,21 @@ map.on('load', () => {
 
   // Function to make GeoJSON from CSV data
   function makeGeoJSON(csvData) {
+    // Split the CSV data into rows
+    const rows = csvData.split('\n');
+
+    // Filter out rows with empty latitude or longitude
+    const filteredRows = rows.filter(row => {
+      const columns = row.split(',');
+      return columns.length >= 2 && columns[0].trim() !== '' && columns[1].trim() !== '';
+    });
+
+    // Reconstruct CSV data without empty latitude or longitude rows
+    const filteredCsvData = filteredRows.join('\n');
+
+    // Convert filtered CSV data to GeoJSON
     csv2geojson.csv2geojson(
-      csvData,
+      filteredCsvData,
       {
         latfield: 'Latitude',
         lonfield: 'Longitude',
@@ -212,13 +225,6 @@ map.on('load', () => {
           displayErrorMessage('Error converting CSV to GeoJSON.');
           return;
         }
-
-        // Filter out features with empty latitude or longitude values
-        data.features = data.features.filter(feature => {
-          const latitude = feature.geometry.coordinates[1];
-          const longitude = feature.geometry.coordinates[0];
-          return latitude !== undefined && longitude !== undefined;
-        });
 
         // Add unique IDs to GeoJSON features
         data.features.forEach((feature, i) => {
