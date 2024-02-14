@@ -151,55 +151,23 @@ map.on('load', () => {
   makeGeoJSON(config.CSV1); // Load CSV1 when the map is loaded
 });
 
-$(document).ready(() => {
-  $('#toggleButton1').click(() => {
-    if (map.getSource('locationData')) {
-      map.removeLayer('locationData');
-      map.removeSource('locationData');
-    }
-    makeGeoJSON(config.CSV1);
-  });
-
-  $('#toggleButton2').click(() => {
-    if (map.getSource('locationData')) {
-      map.removeLayer('locationData');
-      map.removeSource('locationData');
-    }
-    makeGeoJSON(config.CSV2);
-  });
-
-  // Modal functionality
-  // ...
-
-  // CSV Dropdown change event
-  document.getElementById('csvDropdown').addEventListener('change', function() {
-    const selectedCsv = this.value;
-    loadCsv(selectedCsv);
-  });
-
-  // Load CSV function
-  function loadCsv(csvPath) {
-    $.ajax({
-      type: 'GET',
-      url: csvPath,
-      dataType: 'text',
-      success: function(csvData) {
-        makeGeoJSON(csvData);
-      },
-      error: function(request, status, error) {
-        console.error('Error loading CSV:', error);
-      }
-    });
-  }
-
+// CSV Dropdown change event
+document.getElementById('csvDropdown').addEventListener('change', function() {
+  const selectedCsv = this.value;
+  loadCsv(selectedCsv);
 });
 
-  // Function to assign different colors to CSV layers
-  function getCsvColor(csvPath) {
-      const colorMap = {
-          [config.CSV1]: '#ff0000', // Red
-          [config.CSV2]: '#00ff00', // Green
-          // Add more mappings for additional CSVs if needed
-      };
-      return colorMap[csvPath] || '#000000'; // Default to black if color not found
-  }
+// Load CSV function
+function loadCsv(csvPath) {
+  $.ajax({
+    type: 'GET',
+    url: csvPath,
+    dataType: 'text',
+    success: function(csvData) {
+      makeGeoJSON(csvData);
+    },
+    error: function(request, status, error) {
+      console.error('Error loading CSV:', error);
+    }
+  });
+}
