@@ -1,5 +1,6 @@
 #map {
-    /* Remove display: none; to display the map */
+    width: 100%; /* or specify a fixed width */
+    height: 400px; /* or specify a fixed height */
 }
 
 #sidebarA {
