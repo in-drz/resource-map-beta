@@ -155,8 +155,9 @@ geocoder.on('result', (ev) => {
 });
 
 map.on('load', () => {
+  // Add Mapbox geocoder control
   map.addControl(geocoder, 'top-right');
-  console.log('loaded');
+  console.log('Map loaded');
 
   // Event listener for CSV dropdown change
   document.getElementById('csvDropdown').addEventListener('change', function() {
@@ -175,6 +176,7 @@ map.on('load', () => {
       },
       error: function(request, status, error) {
         console.error('Error loading CSV:', error);
+        // Optionally, display an error message to the user
       }
     });
   }
@@ -191,64 +193,102 @@ map.on('load', () => {
       (err, data) => {
         if (err) {
           console.error('Error converting CSV to GeoJSON:', err);
+          // Optionally, display an error message to the user
           return;
         }
 
-        data.features.forEach((data, i) => {
-          data.properties.id = i;
+        // Add unique IDs to GeoJSON features
+        data.features.forEach((feature, i) => {
+          feature.properties.id = i;
         });
 
         geojsonData = data;
 
-        // Add the layer to the map
-        map.addLayer({
-          id: 'locationData',
-          type: 'circle',
-          source: {
-            type: 'geojson',
-            data: geojsonData,
-          },
-          paint: {
-            'circle-radius': 5, // size of circles
-            'circle-color': '#3D2E5D', // color of circles
-            'circle-stroke-color': 'white',
-            'circle-stroke-width': 1,
-            'circle-opacity': 0.7,
-          },
-        });
-
-        // Event listeners for interacting with the map data
-        map.on('click', 'locationData', (e) => {
-          const features = map.queryRenderedFeatures(e.point, {
-            layers: ['locationData'],
-          });
-          if (!features.length) {
-            return;
-          }
-          const clickedPoint = features[0].geometry.coordinates;
-          flyToLocation(clickedPoint);
-          createPopup(features[0]);
-          const activeListing = document.getElementById(
-            'listing-' + features[0].properties.id
-          );
-          $(activeListing).addClass('active');
-          $(activeListing).siblings().removeClass('active');
-        });
-
-        map.on('mouseenter', 'locationData', () => {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-
-        map.on('mouseleave', 'locationData', () => {
-          map.getCanvas().style.cursor = '';
-        });
-
-        buildLocationList(geojsonData);
+        // Add the GeoJSON layer to the map
+        addGeoJSONLayer();
       }
     );
   }
 
-  // Initialize with the default CSV
+  // Function to add GeoJSON layer to the map
+  function addGeoJSONLayer() {
+    map.addLayer({
+      id: 'locationData',
+      type: 'circle',
+      source: {
+        type: 'geojson',
+        data: geojsonData,
+      },
+      paint: {
+        'circle-radius': 5, // size of circles
+        'circle-color': '#3D2E5D', // color of circles
+        'circle-stroke-color': 'white',
+        'circle-stroke-width': 1,
+        'circle-opacity': 0.7,
+      },
+    });
+
+    // Set up event listeners for interacting with the map data
+    setMapEventListeners();
+  }
+
+  // Function to set up event listeners for interacting with the map data
+  function setMapEventListeners() {
+    // Event listener for clicking on map features
+    map.on('click', 'locationData', (e) => {
+      const features = map.queryRenderedFeatures(e.point, {
+        layers: ['locationData'],
+      });
+      if (!features.length) {
+        return;
+      }
+      const clickedPoint = features[0].geometry.coordinates;
+      flyToLocation(clickedPoint);
+      createPopup(features[0]);
+      const activeListing = document.getElementById(
+        'listing-' + features[0].properties.id
+      );
+      $(activeListing).addClass('active');
+      $(activeListing).siblings().removeClass('active');
+    });
+
+    // Event listeners for mouseenter and mouseleave on map features
+    map.on('mouseenter', 'locationData', () => {
+      map.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.on('mouseleave', 'locationData', () => {
+      map.getCanvas().style.cursor = '';
+    });
+
+    // Build location list from GeoJSON data
+    buildLocationList(geojsonData);
+  }
+
+  // Populate the CSV dropdown
+  populateCsvDropdown();
+
+  // Function to populate the CSV dropdown
+  function populateCsvDropdown() {
+    const dropdown = document.getElementById('csvDropdown');
+    Object.keys(config).forEach(key => {
+      const option = document.createElement('option');
+      option.value = config[key];
+      option.textContent = key;
+      dropdown.appendChild(option);
+    });
+  }
+
+  // Add event listeners for sidebar toggle arrows
+  document.getElementById('toggleLeft').addEventListener('click', function () {
+    document.getElementById('sidebarB').classList.add('collapsed');
+  });
+
+  document.getElementById('toggleRight').addEventListener('click', function () {
+    document.getElementById('sidebarB').classList.remove('collapsed');
+  });
+
+  // Load the default CSV
   loadCsv(config.CSV1);
 });
 
