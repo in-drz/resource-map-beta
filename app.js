@@ -156,8 +156,8 @@ map.on('load', () => {
         // Split the row into columns
         const columns = row.split(',');
 
-        // Check if the row has at least two columns and latitude and longitude are not empty or undefined
-        if (columns.length >= 2 && columns[13]?.trim() !== '' && columns[14]?.trim() !== '') {
+        // Check if the row has at least 15 columns and latitude and longitude are not empty or undefined
+        if (columns.length >= 15 && columns[13]?.trim() !== '' && columns[14]?.trim() !== '') {
             // Parse latitude and longitude values
             const latitude = parseFloat(columns[13].trim());
             const longitude = parseFloat(columns[14].trim());
@@ -191,6 +191,7 @@ map.on('load', () => {
     // Add the GeoJSON layer to the map
     addGeoJSONLayer();
 }
+
 
 
   // Function to add GeoJSON layer to the map
