@@ -199,45 +199,55 @@ map.on('load', () => {
 
   // Function to make GeoJSON from CSV data
   function makeGeoJSON(csvData) {
-    // Split the CSV data into rows
-    const rows = csvData.split('\n');
+  // Split the CSV data into rows
+  const rows = csvData.split('\n');
 
-    // Filter out rows with empty latitude or longitude
-    const filteredRows = rows.filter(row => {
-      const columns = row.split(',');
-      return columns.length >= 2 && columns[13].trim() !== '' && columns[14].trim() !== '';
-    });
+  // Initialize an array to store GeoJSON features
+  const features = [];
 
-    // Reconstruct CSV data without empty latitude or longitude rows
-    const filteredCsvData = filteredRows.join('\n');
+  // Iterate over each row of the CSV data
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
 
-    // Convert filtered CSV data to GeoJSON
-    csv2geojson.csv2geojson(
-      filteredCsvData,
-      {
-        latfield: 'Latitude',
-        lonfield: 'Longitude',
-        delimiter: ',',
-      },
-      (err, data) => {
-        if (err) {
-          console.error('Error converting CSV to GeoJSON:', err);
-          displayErrorMessage('Error converting CSV to GeoJSON.');
-          return;
-        }
+    // Split the row into columns
+    const columns = row.split(',');
 
-        // Add unique IDs to GeoJSON features
-        data.features.forEach((feature, i) => {
-          feature.properties.id = i;
-        });
+    // Check if the row has at least two columns and latitude and longitude are not empty
+    if (columns.length >= 2 && columns[13].trim() !== '' && columns[14].trim() !== '') {
+      // Parse latitude and longitude values
+      const latitude = parseFloat(columns[13].trim());
+      const longitude = parseFloat(columns[14].trim());
 
-        geojsonData = data;
+      // Check if latitude and longitude values are valid numbers
+      if (!isNaN(latitude) && !isNaN(longitude)) {
+        // Create a GeoJSON feature
+        const feature = {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [longitude, latitude], // longitude, latitude
+          },
+          properties: {
+            id: i,
+          },
+        };
 
-        // Add the GeoJSON layer to the map
-        addGeoJSONLayer();
+        // Add the feature to the array
+        features.push(feature);
       }
-    );
+    }
   }
+
+  // Create a GeoJSON object from the features
+  const geojsonData = {
+    type: 'FeatureCollection',
+    features: features,
+  };
+
+  // Add the GeoJSON layer to the map
+  addGeoJSONLayer(geojsonData);
+}
+
 
   // Function to display error message
   function displayErrorMessage(message) {
