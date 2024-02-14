@@ -439,195 +439,131 @@ map.on('load', () => {
   map.addControl(geocoder, 'top-right');
 
   // csv2geojson - following the Sheet Mapper tutorial https://www.mapbox.com/impact-tools/sheet-mapper
-  console.log('loaded');
+  'use strict';
 
+  console.log('loaded');
 
   $(document).ready(() => {
 
-    console.log('ready');
-    let currentCSV = config.CSV;
+      console.log('ready');
+      let currentCSV = config.CSV1; // Set default CSV
 
-    $.ajax({
-      type: 'GET',
-      url: config.CSV,
-      dataType: 'text',
-      success: function (csvData) {
-        makeGeoJSON(csvData);
-      },
-      error: function (request, status, error) {
-        console.log(request);
-        console.log(status);
-        console.log(error);
-      },
-    });
+      $.ajax({
+          type: 'GET',
+          url: currentCSV,
+          dataType: 'text',
+          success: function (csvData) {
+              makeGeoJSON(csvData);
+          },
+          error: function (request, status, error) {
+              console.log(request);
+              console.log(status);
+              console.log(error);
+          },
+      });
   });
 
 
-  makeGeoJSON(config.CSV);
-
   function makeGeoJSON(currentCSV) {
-    $.ajax({
-      type: 'GET',
-      url: currentCSV,
-      dataType: 'text',
-      success: function (csvData) {
-        csv2geojson.csv2geojson(
-          csvData,
-          {
-            latfield: 'Latitude',
-            lonfield: 'Longitude',
-            delimiter: ',',
+      $.ajax({
+          type: 'GET',
+          url: currentCSV,
+          dataType: 'text',
+          success: function (csvData) {
+              csv2geojson.csv2geojson(
+                  csvData,
+                  {
+                      latfield: 'Latitude',
+                      lonfield: 'Longitude',
+                      delimiter: ',',
+                  },
+                  (err, data) => {
+                      data.features.forEach((data, i) => {
+                          data.properties.id = i;
+                      });
+
+                      const geojsonData = data;
+
+                      // Add the layer to the map
+                      map.addLayer({
+                          id: 'locationData',
+                          type: 'circle',
+                          source: {
+                              type: 'geojson',
+                              data: geojsonData,
+                          },
+                          paint: {
+                              'circle-radius': 5, // size of circles
+                              'circle-color': '#3D2E5D', // color of circles
+                              'circle-stroke-color': 'white',
+                              'circle-stroke-width': 1,
+                              'circle-opacity': 0.7,
+                          },
+                      });
+                  },
+              );
+
+              // Add event listeners
+              // ...
+
+              buildLocationList(geojsonData);
           },
-          (err, data) => {
-            data.features.forEach((data, i) => {
-              data.properties.id = i;
-            });
-
-            geojsonData = data;
-
-            // Add the layer to the map
-            map.addLayer({
-              id: 'locationData',
-              type: 'circle',
-              source: {
-                type: 'geojson',
-                data: geojsonData,
-              },
-              paint: {
-                'circle-radius': 5, // size of circles
-                'circle-color': '#3D2E5D', // color of circles
-                'circle-stroke-color': 'white',
-                'circle-stroke-width': 1,
-                'circle-opacity': 0.7,
-              },
-            });
+          error: function (request, status, error) {
+              console.log(request);
+              console.log(status);
+              console.log(error);
           },
-        );
-
-        map.on('click', 'locationData', (e) => {
-          const features = map.queryRenderedFeatures(e.point, {
-            layers: ['locationData'],
-          });
-          const clickedPoint = features[0].geometry.coordinates;
-          flyToLocation(clickedPoint);
-          sortByDistance(clickedPoint);
-          createPopup(features[0]);
-        });
-
-        map.on('mouseenter', 'locationData', () => {
-          map.getCanvas().style.cursor = 'pointer';
-        });
-
-        map.on('mouseleave', 'locationData', () => {
-          map.getCanvas().style.cursor = '';
-        });
-
-        buildLocationList(geojsonData);
-      },
-      error: function (request, status, error) {
-        console.log(request);
-        console.log(status);
-        console.log(error);
-      },
-    });
+      });
   }
 
   $('#toggleButton1').click(() => {
-
-    if (map.getSource('locationData')) {
-    map.removeLayer('locationData');
-    map.removeSource('locationData');
-  }
-    makeGeoJSON(config.CSV);
+      if (map.getSource('locationData')) {
+          map.removeLayer('locationData');
+          map.removeSource('locationData');
+      }
+      makeGeoJSON(config.CSV1);
   });
 
   $('#toggleButton2').click(() => {
+      if (map.getSource('locationData')) {
+          map.removeLayer('locationData');
+          map.removeSource('locationData');
+      }
+      makeGeoJSON(config.CSV2);
+  });
 
-    if (map.getSource('locationData')) {
-    map.removeLayer('locationData');
-    map.removeSource('locationData');
+  // Add more toggleButton handlers for additional CSVs if needed
+
+  // Modal functionality
+  // ...
+
+  // CSV Dropdown change event
+  document.getElementById('csvDropdown').addEventListener('change', function() {
+      const selectedCsv = this.value;
+      loadCsv(selectedCsv);
+  });
+
+  // Load CSV function
+  function loadCsv(csvPath) {
+      $.ajax({
+          type: 'GET',
+          url: csvPath,
+          dataType: 'text',
+          success: function(csvData) {
+              makeGeoJSON(csvData);
+          },
+          error: function(request, status, error) {
+              console.error('Error loading CSV:', error);
+          }
+      });
   }
-    makeGeoJSON(config.CSV2);
-  });
-});
 
-
-// Modal - popup for filtering results
-const filterResults = document.getElementById('filterResults');
-const exitButton = document.getElementById('exitButton');
-const modal = document.getElementById('modal');
-
-filterResults.addEventListener('click', () => {
-  modal.classList.remove('hide-visually');
-  modal.classList.add('z5');
-});
-
-exitButton.addEventListener('click', () => {
-  modal.classList.add('hide-visually');
-});
-
-const title = document.getElementById('title');
-title.innerText = config.title;
-const description = document.getElementById('description');
-description.innerText = config.description;
-
-function transformRequest(url) {
-  const isMapboxRequest =
-    url.slice(8, 22) === 'api.mapbox.com' ||
-    url.slice(10, 26) === 'tiles.mapbox.com';
-  return {
-    url: isMapboxRequest ? url.replace('?', '?pluginName=finder&') : url,
-  };
-}
-document.getElementById('csvDropdown').addEventListener('change', function() {
-  const selectedCsv = this.value;
-  loadCsv(selectedCsv);
-});
-
-function loadCsv(csvPath) {
-  $.ajax({
-    type: 'GET',
-    url: csvPath,
-    dataType: 'text',
-    success: function(csvData) {
-      makeGeoJSON(csvData);
-    },
-    error: function(request, status, error) {
-      console.error('Error loading CSV:', error);
-    }
-  });
-}
-
-function makeGeoJSON(currentCSV) {
-  // Same as before
-  // Update this function to handle multiple CSV layers with different colors
-}
-
-// When adding layers to the map, specify different colors for each CSV
-map.addLayer({
-  id: 'locationData-' + csvPath, // Unique layer ID for each CSV
-  type: 'circle',
-  source: {
-    type: 'geojson',
-    data: geojsonData,
-  },
-  paint: {
-    'circle-radius': 5,
-    // Apply different colors based on CSV
-    'circle-color': getCsvColor(csvPath),
-    'circle-stroke-color': 'white',
-    'circle-stroke-width': 1,
-    'circle-opacity': 0.7,
-  },
-});
-
-function getCsvColor(csvPath) {
-  // Define a mapping of CSV paths to colors
-  const colorMap = {
-    'path/to/csv1.csv': '#ff0000', // Red
-    'path/to/csv2.csv': '#00ff00', // Green
-    // Add more mappings for additional CSVs
-  };
-  // Return the color for the given CSV path
-  return colorMap[csvPath] || '#000000'; // Default to black if color not found
-}
+  // Function to assign different colors to CSV layers
+  function getCsvColor(csvPath) {
+      const colorMap = {
+          [config.CSV1]: '#ff0000', // Red
+          [config.CSV2]: '#00ff00', // Green
+          // Add more mappings for additional CSVs if needed
+      };
+      return colorMap[csvPath] || '#000000'; // Default to black if color not found
+  }

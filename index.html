@@ -23,7 +23,6 @@
     <div id="introScreen" class="intro-screen flex-parent flex-parent--center-main">
         <div class="intro-content">
             <h1>Welcome</h1>
-            <p> How can we assist you? </p>
         </div>
     </div>
     <div class='flex-parent viewport-full relative scroll-hidden'>
@@ -33,6 +32,10 @@
                 <select id="csvDropdown" class="input input--sml mb12">
                     <!-- Options for each CSV will be dynamically added here -->
                 </select>
+                <div id="sidebarToggle" class="sidebar-toggle">
+                    <i id="toggleLeft" class="fa fa-arrow-left" aria-hidden="true"></i>
+                    <i id="toggleRight" class="fa fa-arrow-right" aria-hidden="true"></i>
+                </div>
             </div>
             <div class='flex-parent flex-parent--column viewport-third bg-white'>
                 <!-- Add other content for the sidebar here -->
@@ -58,9 +61,18 @@
         option.textContent = key;
         dropdown.appendChild(option);
     });
+
+    // Add event listeners for sidebar toggle arrows
+    document.getElementById('toggleLeft').addEventListener('click', function () {
+        document.getElementById('sidebarB').classList.add('collapsed');
+    });
+
+    document.getElementById('toggleRight').addEventListener('click', function () {
+        document.getElementById('sidebarB').classList.remove('collapsed');
+    });
 </script>
 
 <script src="config.js"></script>
 <script src="app.js"></script>
 
-</html>
+</html
