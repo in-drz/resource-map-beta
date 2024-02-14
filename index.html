@@ -35,7 +35,7 @@
             <div id="sidebarB" class="flex-parent flex-parent--column-ml flex-parent--center-main theme py12 px12 bg-white">
                 <h3>Select CSV</h3>
                 <select id="csvDropdown" class="input input--sml mb12">
-                    <!-- Options will be populated dynamically -->
+                    <!-- Options for each CSV will be dynamically added here -->
                 </select>
             </div>
             <div class='flex-parent flex-parent--column viewport-third bg-white'>
@@ -43,49 +43,27 @@
             </div>
         </div>
     </div>
-    <div class='flex-child flex-child--grow w-auto viewport-full-ml viewport-twothirds' id='map'></div>
-    <div id='modal' class='modal hide-visually'>
-        <div class='modal-content'>
-            <span id='exitButton' class='close-button'>&times;</span>
-            <h2>Do you need help?</h2>
-            <p>If you need assistance, please let us know.</p>
-            <button id='yesButton'>Yes</button>
-            <button id='noButton'>No</button>
-        </div>
-    </div>
-    <div id='modal'
-        class='absolute top right bottom left scroll-auto hide-visually flex-parent flex-parent--center-main mt120-ml'>
-        <div class='pt36'>
-            <div class='flex-child bg-white round relative scroll-auto'>
-                <button id='exitButton' class='absolute top right px12 py12'>
-                    <svg class='icon link color-darken50'>
-                        <use xlink:href='#icon-close'></use>
-                    </svg>
-                </button>
-                <div class='px24 py24'>
-                    <form id="filters"></form>
-                    <div class='align-center py12'></div>
-                    <div class="flex-parent flex-parent--center-main">
-                        <button id="removeFilters" class="btn">Reset Filters</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 
 <script>
-    // Populate CSV dropdown options
-    const csvDropdown = document.getElementById('csvDropdown');
-    Object.entries(config).forEach(([key, value]) => {
-        if (key.startsWith('CSV')) {
-            const option = document.createElement('option');
-            option.value = value;
-            option.textContent = key;
-            csvDropdown.appendChild(option);
-        }
+    // JavaScript code to dynamically add options to the CSV dropdown
+    const config = {
+        CSV1: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=charging_locations',
+        CSV2: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=fridge_list',
+        CSV3: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=mutual_aid_groups',
+        CSV4: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=resource_responders',
+        CSV5: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=public_hotspot locations'
+    };
+
+    const dropdown = document.getElementById('csvDropdown');
+    Object.keys(config).forEach(key => {
+        const option = document.createElement('option');
+        option.value = config[key];
+        option.textContent = key;
+        dropdown.appendChild(option);
     });
 </script>
+
 <script src="config.js"></script>
 <script src="app.js"></script>
 
