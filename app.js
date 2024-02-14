@@ -155,11 +155,11 @@ map.on('load', () => {
   $(document).ready(() => {
 
     console.log('ready');
-    let currentCSV = config.CSV;
+    let currentCSV = config.CSV1;
 
     $.ajax({
       type: 'GET',
-      url: config.CSV,
+      url: config.CSV1,
       dataType: 'text',
       success: function (csvData) {
         makeGeoJSON(csvData);
@@ -173,7 +173,7 @@ map.on('load', () => {
   });
 
 
-  makeGeoJSON(config.CSV);
+  makeGeoJSON(config.CSV1);
 
   function makeGeoJSON(currentCSV) {
     $.ajax({
