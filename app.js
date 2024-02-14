@@ -335,6 +335,40 @@ $('#menu-toggle').on('click', function(e) {
   $('#wrapper').toggleClass('toggled');
 });
 
+// Function to add GeoJSON layer to the map
+function addGeoJSONLayer() {
+    // Check if the layer already exists and remove it before adding a new one
+    if (map.getSource('geojsonData')) {
+        map.removeSource('geojsonData');
+    }
+
+    map.addSource('geojsonData', {
+        type: 'geojson',
+        data: geojsonData,
+    });
+
+    // Check if the layer already exists and remove it before adding a new one
+    if (map.getLayer('locationData')) {
+        map.removeLayer('locationData');
+    }
+
+    map.addLayer({
+        id: 'locationData',
+        type: 'circle',
+        source: 'geojsonData', // Use the source ID here
+        paint: {
+            'circle-radius': 5, // size of circles
+            'circle-color': '#3D2E5D', // color of circles
+            'circle-stroke-color': 'white',
+            'circle-stroke-width': 1,
+            'circle-opacity': 0.7,
+        },
+    });
+
+    // Set up event listeners for interacting with the map data
+    setMapEventListeners();
+}
+
 // Event listener for weather toggle checkbox
 document.getElementById('weatherToggle').addEventListener('change', function() {
   const radarLayerId = 'weather-radar';
@@ -346,7 +380,7 @@ document.getElementById('weatherToggle').addEventListener('change', function() {
       source: {
         type: 'raster',
         tiles: [
-          'https://tile.openweathermap.org/map/radar_new/{z}/{x}/{y}.png?appid=YOUR_OPENWEATHERMAP_API_KEY',
+          'https://tile.openweathermap.org/map/radar_new/{z}/{x}/{y}.png?appid=13b7a33f1b10f254853164c4b2d67c71',
         ],
         tileSize: 256,
       },
