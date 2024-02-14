@@ -37,34 +37,6 @@
         <div id="map"></div>
     </div>
 
-    <script>
-        // JavaScript code to dynamically add options to the CSV dropdown
-        const config = {
-            CSV1: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=charging_locations',
-            CSV2: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=fridge_list',
-            CSV3: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=mutual_aid_groups',
-            CSV4: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=resource_responders',
-            CSV5: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=public_hotspot locations'
-        };
-
-        const dropdown = document.getElementById('csvDropdown');
-        Object.keys(config).forEach(key => {
-            const option = document.createElement('option');
-            option.value = config[key];
-            option.textContent = key;
-            dropdown.appendChild(option);
-        });
-
-        // Add event listeners for sidebar toggle arrows
-        document.getElementById('toggleLeft').addEventListener('click', function () {
-            document.getElementById('sidebarB').classList.add('collapsed');
-        });
-
-        document.getElementById('toggleRight').addEventListener('click', function () {
-            document.getElementById('sidebarB').classList.remove('collapsed');
-        });
-    </script>
-
     <script src="config.js"></script>
     <script src="app.js"></script>
 </body>
