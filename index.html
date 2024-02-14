@@ -17,62 +17,90 @@
     <script src='https://npmcdn.com/csv2geojson@latest/csv2geojson.js'></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <link rel='stylesheet' href="style.css" />
+    <style>
+        /* CSS to style the map and sidebar container */
+        #map-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        #sidebarB {
+            width: 300px; /* Adjust as needed */
+            height: 100%;
+            background-color: #ffffff;
+            border-right: 1px solid #ccc;
+            overflow: auto;
+            transition: width 0.3s ease;
+        }
+
+        #map {
+            flex: 1;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Collapsed state for the sidebar */
+        #sidebarB.collapsed {
+            width: 0;
+        }
+
+        /* Styling for the toggle arrows */
+        .sidebar-toggle {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="introScreen" class="intro-screen flex-parent flex-parent--center-main">
-        <div class="intro-content">
-            <h1>Welcome</h1>
-        </div>
-    </div>
-    <div class='flex-parent viewport-full relative scroll-hidden'>
-        <div class='flex-child w-full w360-ml absolute static-ml left bottom'>
-            <div id="sidebarB" class="flex-parent flex-parent--column-ml flex-parent--center-main theme py12 px12 bg-white">
-                <h3>Select CSV</h3>
-                <select id="csvDropdown" class="input input--sml mb12">
-                    <!-- Options for each CSV will be dynamically added here -->
-                </select>
-                <div id="sidebarToggle" class="sidebar-toggle">
-                    <i id="toggleLeft" class="fa fa-arrow-left" aria-hidden="true"></i>
-                    <i id="toggleRight" class="fa fa-arrow-right" aria-hidden="true"></i>
-                </div>
-            </div>
-            <div class='flex-parent flex-parent--column viewport-third bg-white'>
-                <!-- Add other content for the sidebar here -->
+    <div id="map-container">
+        <div id="sidebarB" class="flex-parent flex-parent--column-ml flex-parent--center-main theme py12 px12 bg-white">
+            <h3>Select CSV</h3>
+            <select id="csvDropdown" class="input input--sml mb12">
+                <!-- Options for each CSV will be dynamically added here -->
+            </select>
+            <div id="sidebarToggle" class="sidebar-toggle">
+                <i id="toggleLeft" class="fa fa-arrow-left" aria-hidden="true"></i>
+                <i id="toggleRight" class="fa fa-arrow-right" aria-hidden="true"></i>
             </div>
         </div>
+        <div id="map"></div>
     </div>
+
+    <script>
+        // JavaScript code to dynamically add options to the CSV dropdown
+        const config = {
+            CSV1: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=charging_locations',
+            CSV2: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=fridge_list',
+            CSV3: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=mutual_aid_groups',
+            CSV4: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=resource_responders',
+            CSV5: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=public_hotspot locations'
+        };
+
+        const dropdown = document.getElementById('csvDropdown');
+        Object.keys(config).forEach(key => {
+            const option = document.createElement('option');
+            option.value = config[key];
+            option.textContent = key;
+            dropdown.appendChild(option);
+        });
+
+        // Add event listeners for sidebar toggle arrows
+        document.getElementById('toggleLeft').addEventListener('click', function () {
+            document.getElementById('sidebarB').classList.add('collapsed');
+        });
+
+        document.getElementById('toggleRight').addEventListener('click', function () {
+            document.getElementById('sidebarB').classList.remove('collapsed');
+        });
+    </script>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
 </body>
 
-<script>
-    // JavaScript code to dynamically add options to the CSV dropdown
-    const config = {
-        CSV1: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=charging_locations',
-        CSV2: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=fridge_list',
-        CSV3: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=mutual_aid_groups',
-        CSV4: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=resource_responders',
-        CSV5: 'https://docs.google.com/spreadsheets/d/1xunXdoTGyTaQDb96_5Bklld7E7wQSG6VOKYviLGpRqY/gviz/tq?tqx=out:csv&sheet=public_hotspot locations'
-    };
-
-    const dropdown = document.getElementById('csvDropdown');
-    Object.keys(config).forEach(key => {
-        const option = document.createElement('option');
-        option.value = config[key];
-        option.textContent = key;
-        dropdown.appendChild(option);
-    });
-
-    // Add event listeners for sidebar toggle arrows
-    document.getElementById('toggleLeft').addEventListener('click', function () {
-        document.getElementById('sidebarB').classList.add('collapsed');
-    });
-
-    document.getElementById('toggleRight').addEventListener('click', function () {
-        document.getElementById('sidebarB').classList.remove('collapsed');
-    });
-</script>
-
-<script src="config.js"></script>
-<script src="app.js"></script>
-
-</html
+</html>
