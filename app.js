@@ -147,73 +147,71 @@ geocoder.on('result', (ev) => {
 
 map.on('load', () => {
   map.addControl(geocoder, 'top-right');
-
-  // csv2geojson - following the Sheet Mapper tutorial https://www.mapbox.com/impact-tools/sheet-mapper
   console.log('loaded');
 
+  // Load initial CSV when the map is loaded
+  loadCsv(config.CSV1);
 
-  $(document).ready(() => {
-
-    console.log('ready');
-    let currentCSV = config.CSV1;
-
-    $.ajax({
-      type: 'GET',
-      url: config.CSV1,
-      dataType: 'text',
-      success: function (csvData) {
-        makeGeoJSON(csvData);
-      },
-      error: function (request, status, error) {
-        console.log(request);
-        console.log(status);
-        console.log(error);
-      },
-    });
+  // Event listener for CSV dropdown change
+  document.getElementById('csvDropdown').addEventListener('change', function() {
+    const selectedCsv = this.value;
+    loadCsv(selectedCsv);
   });
 
-
-  makeGeoJSON(config.CSV1);
-
-  function makeGeoJSON(currentCSV) {
+  // Function to load CSV data
+  function loadCsv(csvPath) {
     $.ajax({
       type: 'GET',
-      url: currentCSV,
+      url: csvPath,
       dataType: 'text',
-      success: function (csvData) {
-        csv2geojson.csv2geojson(
-          csvData,
-          {
-            latfield: 'Latitude',
-            lonfield: 'Longitude',
-            delimiter: ',',
+      success: function(csvData) {
+        makeGeoJSON(csvData);
+      },
+      error: function(request, status, error) {
+        console.error('Error loading CSV:', error);
+      }
+    });
+  }
+
+  // Function to make GeoJSON from CSV data
+  function makeGeoJSON(csvData) {
+    csv2geojson.csv2geojson(
+      csvData,
+      {
+        latfield: 'Latitude',
+        lonfield: 'Longitude',
+        delimiter: ',',
+      },
+      (err, data) => {
+        if (err) {
+          console.error('Error converting CSV to GeoJSON:', err);
+          return;
+        }
+
+        data.features.forEach((data, i) => {
+          data.properties.id = i;
+        });
+
+        geojsonData = data;
+
+        // Add the layer to the map
+        map.addLayer({
+          id: 'locationData',
+          type: 'circle',
+          source: {
+            type: 'geojson',
+            data: geojsonData,
           },
-          (err, data) => {
-            data.features.forEach((data, i) => {
-              data.properties.id = i;
-            });
-
-            geojsonData = data;
-
-            // Add the layer to the map
-            map.addLayer({
-              id: 'locationData',
-              type: 'circle',
-              source: {
-                type: 'geojson',
-                data: geojsonData,
-              },
-              paint: {
-                'circle-radius': 5, // size of circles
-                'circle-color': '#3D2E5D', // color of circles
-                'circle-stroke-color': 'white',
-                'circle-stroke-width': 1,
-                'circle-opacity': 0.7,
-              },
-            });
+          paint: {
+            'circle-radius': 5, // size of circles
+            'circle-color': '#3D2E5D', // color of circles
+            'circle-stroke-color': 'white',
+            'circle-stroke-width': 1,
+            'circle-opacity': 0.7,
           },
-        );
+        });
 
+        // Event listeners for interacting with the map data
         map.on('click', 'locationData', (e) => {
           const features = map.queryRenderedFeatures(e.point, {
             layers: ['locationData'],
@@ -233,40 +231,7 @@ map.on('load', () => {
         });
 
         buildLocationList(geojsonData);
-      },
-      error: function (request, status, error) {
-        console.log(request);
-        console.log(status);
-        console.log(error);
-      },
-    });
+      }
+    );
   }
-
 });
-
-map.on('load', () => {
-  map.addControl(geocoder, 'top-right');
-  console.log('loaded');
-  makeGeoJSON(config.CSV1); // Load CSV1 when the map is loaded
-});
-
-// CSV Dropdown change event
-document.getElementById('csvDropdown').addEventListener('change', function() {
-  const selectedCsv = this.value;
-  loadCsv(selectedCsv);
-});
-
-// Load CSV function
-function loadCsv(csvPath) {
-  $.ajax({
-    type: 'GET',
-    url: csvPath,
-    dataType: 'text',
-    success: function(csvData) {
-      makeGeoJSON(csvData);
-    },
-    error: function(request, status, error) {
-      console.error('Error loading CSV:', error);
-    }
-  });
-}
