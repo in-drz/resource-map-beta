@@ -34,18 +34,9 @@
         <div class='flex-child w-full w360-ml absolute static-ml left bottom'>
             <div id="sidebarB" class="flex-parent flex-parent--column-ml flex-parent--center-main theme py12 px12 bg-white">
                 <h3>Select CSV</h3>
-                <select id="csvDropdown" class="input input--sml mb12"></select>
-                <script>
-                    // Loop through CSV paths in config and create options for each CSV
-                    Object.entries(config).forEach(([key, value]) => {
-                        if (key.startsWith('CSV')) {
-                            const option = document.createElement('option');
-                            option.value = value;
-                            option.textContent = key; // Use CSV key as option label
-                            document.getElementById('csvDropdown').appendChild(option);
-                        }
-                    });
-                </script>
+                <select id="csvDropdown" class="input input--sml mb12">
+                    <!-- Options will be populated dynamically -->
+                </select>
             </div>
             <div class='flex-parent flex-parent--column viewport-third bg-white'>
                 <!-- Add other content for the sidebar here -->
@@ -84,7 +75,16 @@
 </body>
 
 <script>
-
+    // Populate CSV dropdown options
+    const csvDropdown = document.getElementById('csvDropdown');
+    Object.entries(config).forEach(([key, value]) => {
+        if (key.startsWith('CSV')) {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = key;
+            csvDropdown.appendChild(option);
+        }
+    });
 </script>
 <script src="config.js"></script>
 <script src="app.js"></script>
