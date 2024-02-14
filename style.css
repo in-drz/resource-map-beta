@@ -152,6 +152,45 @@
 #sidebarB h3 {
     margin-top: 0;
 }
+#csvDropdown {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: 16px;
+  color: #333;
+}
+
+#csvDropdown option {
+  background-color: #fff;
+  color: #333;
+}
+
+/* Style the dropdown arrow */
+#csvDropdown::-ms-expand {
+  display: none; /* Hide the default arrow on IE10 and IE11 */
+}
+
+#csvDropdown::before {
+  content: '\25BC'; /* Unicode character for down arrow */
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Style the dropdown arrow when dropdown is open */
+#csvDropdown.open::before {
+  content: '\25B2'; /* Unicode character for up arrow */
+}
+
+/* Style the dropdown when it is open */
+#csvDropdown.open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
 
 
 /* Add more styles as needed */
