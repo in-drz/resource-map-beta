@@ -1,7 +1,7 @@
 /* Original styles */
 #map {
-    width: 100%; /* or specify a fixed width */
-    height: 400px; /* or specify a fixed height */
+    width: 100%;
+    height: 100vh; /* Use full viewport height */
 }
 
 .theme, .select, #filterResults, .mapboxgl-ctrl-geocoder--input, .listings .item, .listings .item .title {
@@ -18,14 +18,14 @@
 }
 
 .listings .item, .listings .item .title {
-    color: #2A395F; /* Change text color to your preferred color */
+    color: #2A395F;
 }
 
 .listings .item {
-    font-size: 14px;
+    font-size: 16px; /* Increase font size for better readability */
     word-wrap: break-word;
     text-decoration: none;
-    border-bottom: solid rgb(34, 33, 33, .3) 1px;
+    border-bottom: solid #2A395F 1px; /* Darker border color */
 }
 
 .listings .item:last-child {
@@ -34,15 +34,14 @@
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
-    border-left: 0;
-    background: rgba(0, 0, 0, 0.1);
+    width: 6px; /* Increase scrollbar width */
+    height: 6px; /* Increase scrollbar height */
+    background: transparent; /* Make scrollbar transparent */
 }
 
 ::-webkit-scrollbar-thumb {
-    border-radius: 0;
-    background: #2A395F;
+    border-radius: 3px; /* Round scrollbar thumb */
+    background: #2A395F; /* Darker color for scrollbar thumb */
 }
 
 .clearfix::after {
@@ -56,54 +55,40 @@
 /* Popup styles */
 .mapboxgl-popup {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Adjust z-index as needed to ensure it appears above other content */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the popup */
+    max-width: 90%; /* Adjust maximum width */
+    max-height: 90%; /* Adjust maximum height */
+    overflow: auto; /* Add scrollbar when content overflows */
+    z-index: 9999;
 }
 
 .mapboxgl-popup-content {
-    font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+    font: 400 16px/1.6 'Source Sans Pro', 'Helvetica Neue', sans-serif; /* Adjust font size and line height */
     text-align: left;
     padding: 20px;
-    max-width: 80%;
     background-color: #F9D50B;
     color: #2A395F;
     border-radius: 10px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .mapboxgl-popup-content button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 36px;
-    padding: 0 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-    background-color: #fff;
-    color: #333;
+    display: inline-block; /* Align buttons horizontally */
+    margin-right: 10px; /* Add spacing between buttons */
+    background-color: #2A395F;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
     font-size: 14px;
-    font-weight: 500;
-    line-height: 1;
-    text-transform: uppercase;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .mapboxgl-popup-content button:hover {
-    background-color: #f4f4f4;
-    border-color: #bbb;
-}
-
-.mapboxgl-popup-content button:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    background-color: #1C2B4A; /* Darken button color on hover */
 }
 
 .mapboxgl-popup-close-button {
@@ -122,17 +107,17 @@
     display: flex;
     height: 100vh;
     width: 100%;
-    position: relative; /* Ensure the container is positioned relative to its parent */
+    position: relative;
 }
 
 #sidebarB {
-    width: 300px; /* Adjust as needed */
+    width: 300px;
     height: 100%;
     background-color: #ffffff;
     border-right: 1px solid #ccc;
     overflow: auto;
     transition: width 0.3s ease;
-    flex-shrink: 0; /* Prevent sidebar from shrinking */
+    flex-shrink: 0;
 }
 
 /* Collapsed state for the sidebar */
@@ -152,9 +137,10 @@
 #sidebarB h3 {
     margin-top: 0;
 }
+
 #csvDropdown {
   width: 100%;
-  padding: 10px;
+  padding: 12px; /* Increase padding for better touch support */
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #fff;
@@ -168,22 +154,17 @@
 }
 
 /* Style the dropdown arrow */
-#csvDropdown::-ms-expand {
-  display: none; /* Hide the default arrow on IE10 and IE11 */
-}
-
-#csvDropdown::before {
-  content: '\25BC'; /* Unicode character for down arrow */
+#csvDropdown::after {
+  content: '\25BC';
   position: absolute;
   top: 50%;
   right: 10px;
   transform: translateY(-50%);
-  pointer-events: none;
 }
 
 /* Style the dropdown arrow when dropdown is open */
-#csvDropdown.open::before {
-  content: '\25B2'; /* Unicode character for up arrow */
+#csvDropdown.open::after {
+  content: '\25B2';
 }
 
 /* Style the dropdown when it is open */
@@ -191,6 +172,3 @@
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
-
-
-/* Add more styles as needed */
