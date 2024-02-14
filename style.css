@@ -1,3 +1,4 @@
+/* Original styles */
 #map {
     width: 100%; /* or specify a fixed width */
     height: 400px; /* or specify a fixed height */
@@ -150,3 +151,47 @@
     margin: 0;
     color: black;
 }
+
+/* Additional styles */
+#map-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    position: relative; /* Ensure the container is positioned relative to its parent */
+}
+
+#sidebarB {
+    width: 300px; /* Adjust as needed */
+    height: 100%;
+    background-color: #ffffff;
+    border-right: 1px solid #ccc;
+    overflow: auto;
+    transition: width 0.3s ease;
+    flex-shrink: 0; /* Prevent sidebar from shrinking */
+}
+
+#map {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+}
+
+/* Collapsed state for the sidebar */
+#sidebarB.collapsed {
+    width: 0;
+}
+
+/* Styling for the toggle arrows */
+.sidebar-toggle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 5px;
+    cursor: pointer;
+}
+
+#sidebarB h3 {
+    margin-top: 0;
+}
+
+/* Add more styles as needed */
