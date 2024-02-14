@@ -144,55 +144,56 @@ map.on('load', () => {
   }
 
   // Function to make GeoJSON from CSV data
-  function makeGeoJSON(csvData) {
-    // Split the CSV data into rows
-    const rows = csvData.split('\n');
+function makeGeoJSON(csvData) {
+  // Split the CSV data into rows
+  const rows = csvData.split('\n');
 
-    // Initialize an array to store GeoJSON features
-    const features = [];
+  // Initialize an array to store GeoJSON features
+  const features = [];
 
-    // Iterate over each row of the CSV data
-    for (let i = 0; i < rows.length; i++) {
-      const row = rows[i];
+  // Iterate over each row of the CSV data
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
 
-      // Split the row into columns
-      const columns = row.split(',');
+    // Split the row into columns
+    const columns = row.split(',');
 
-      // Check if the row has at least two columns and latitude and longitude are not empty
-      if (columns.length >= 2 && columns[13].trim() !== '' && columns[14].trim() !== '') {
-        // Parse latitude and longitude values
-        const latitude = parseFloat(columns[13].trim());
-        const longitude = parseFloat(columns[14].trim());
+    // Check if the row has at least two columns and latitude and longitude are not empty
+    if (columns.length >= 2 && columns[13].trim() !== '' && columns[14].trim() !== '') {
+      // Parse latitude and longitude values
+      const latitude = parseFloat(columns[13].trim());
+      const longitude = parseFloat(columns[14].trim());
 
-        // Check if latitude and longitude values are valid numbers
-        if (!isNaN(latitude) && !isNaN(longitude)) {
-          // Create a GeoJSON feature
-          const feature = {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [longitude, latitude], // longitude, latitude
-            },
-            properties: {
-              id: i,
-            },
-          };
+      // Check if latitude and longitude values are valid numbers
+      if (!isNaN(latitude) && !isNaN(longitude)) {
+        // Create a GeoJSON feature
+        const feature = {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [longitude, latitude], // longitude, latitude
+          },
+          properties: {
+            id: i,
+          },
+        };
 
-          // Add the feature to the array
-          features.push(feature);
-        }
+        // Add the feature to the array
+        features.push(feature);
       }
     }
+  }
 
-    // Create a GeoJSON object from the features
-    const geojsonData = {
-      type: 'FeatureCollection',
-      features: features,
-    };
+  // Create a GeoJSON object from the features
+  const geojsonData = {
+    type: 'FeatureCollection',
+    features: features,
+  };
 
   // Add the GeoJSON layer to the map
   addGeoJSONLayer(geojsonData);
 }
+
 
 function buildLocationList(locationData) {
   const listings = document.getElementById('listings');
