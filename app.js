@@ -333,7 +333,7 @@ map.on('load', () => {
   });
 
   // Load the default CSV
-  //loadCsv(config.CSV1);
+  loadCsv(config.CSV1);
 });
 
 // Function to display error message
