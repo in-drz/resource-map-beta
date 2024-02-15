@@ -145,54 +145,53 @@ map.on('load', () => {
   function makeGeoJSON(csvData) {
     // Split the CSV data into rows
     const rows = csvData.split('\n');
+    console.log('CSV rows:', rows);
 
     // Initialize an array to store GeoJSON features
     const features = [];
 
     // Iterate over each row of the CSV data
     for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
+      const row = rows[i];
 
-        // Split the row into columns
-        const columns = row.split(',');
+      // Split the row into columns
+      const columns = row.split(',');
 
-        // Check if the row has at least 15 columns and latitude and longitude are not empty or undefined
-        if (columns.length >= 15 && columns[13]?.trim() !== '' && columns[14]?.trim() !== '') {
-            // Parse latitude and longitude values
-            const latitude = parseFloat(columns[13].trim());
-            const longitude = parseFloat(columns[14].trim());
+      // Check if the row has at least 15 columns and latitude and longitude are not empty or undefined
+      if (columns.length >= 15 && columns[13]?.trim() !== '' && columns[14]?.trim() !== '') {
+        // Parse latitude and longitude values
+        const latitude = parseFloat(columns[13].trim());
+        const longitude = parseFloat(columns[14].trim());
 
-            // Check if latitude and longitude values are valid numbers
-            if (!isNaN(latitude) && !isNaN(longitude)) {
-                // Create a GeoJSON feature
-                const feature = {
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [longitude, latitude], // longitude, latitude
-                    },
-                    properties: {
-                        id: i,
-                    },
-                };
+        // Check if latitude and longitude values are valid numbers
+        if (!isNaN(latitude) && !isNaN(longitude)) {
+          // Create a GeoJSON feature
+          const feature = {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [longitude, latitude], // longitude, latitude
+            },
+            properties: {
+              id: i,
+            },
+          };
 
-                // Add the feature to the array
-                features.push(feature);
-            }
+          // Add the feature to the array
+          features.push(feature);
         }
+      }
     }
 
     // Create a GeoJSON object from the features
     geojsonData = {
-        type: 'FeatureCollection',
-        features: features,
+      type: 'FeatureCollection',
+      features: features,
     };
 
     // Add the GeoJSON layer to the map
     addGeoJSONLayer();
-}
-
-
+  }
 
   // Function to add GeoJSON layer to the map
   function addGeoJSONLayer() {
@@ -228,6 +227,7 @@ map.on('load', () => {
       const features = map.queryRenderedFeatures(e.point, {
         layers: ['locationData'],
       });
+      console.log('Clicked feature:', features[0]);
       if (!features.length) {
         return;
       }
@@ -243,10 +243,12 @@ map.on('load', () => {
 
     // Event listeners for mouseenter and mouseleave on map features
     map.on('mouseenter', 'locationData', () => {
+      console.log('Mouse entered locationData layer');
       map.getCanvas().style.cursor = 'pointer';
     });
 
     map.on('mouseleave', 'locationData', () => {
+      console.log('Mouse left locationData layer');
       map.getCanvas().style.cursor = '';
     });
 
@@ -335,44 +337,6 @@ $('#menu-toggle').on('click', function(e) {
   e.preventDefault();
   $('#wrapper').toggleClass('toggled');
 });
-
-// Function to add GeoJSON layer to the map
-function addGeoJSONLayer() {
-    // Check if the source already exists
-    if (map.getSource('geojsonData')) {
-        // Update the existing source with new data
-        map.getSource('geojsonData').setData(geojsonData);
-    } else {
-        // Add the source if it doesn't exist
-        map.addSource('geojsonData', {
-            type: 'geojson',
-            data: geojsonData,
-        });
-    }
-
-    // Check if the layer already exists and remove it before adding a new one
-    if (map.getLayer('locationData')) {
-        map.removeLayer('locationData');
-    }
-
-    // Add the layer using the source
-    map.addLayer({
-        id: 'locationData',
-        type: 'circle',
-        source: 'geojsonData', // Use the source ID here
-        paint: {
-            'circle-radius': 5, // size of circles
-            'circle-color': '#3D2E5D', // color of circles
-            'circle-stroke-color': 'white',
-            'circle-stroke-width': 1,
-            'circle-opacity': 0.7,
-        },
-    });
-
-    // Set up event listeners for interacting with the map data
-    setMapEventListeners();
-}
-
 
 // Event listener for weather toggle checkbox
 document.getElementById('weatherToggle').addEventListener('change', function() {
