@@ -188,138 +188,140 @@ map.on('load', () => {
       type: 'FeatureCollection',
       features: features,
     };
+    console.log('GeoJSON data:', geojsonData); // Add this console log
 
     // Add the GeoJSON layer to the map
     addGeoJSONLayer();
-  }
-
-  // Function to add GeoJSON layer to the map
-  // Function to add GeoJSON layer to the map
-  function addGeoJSONLayer() {
-    // Check if the layer already exists and remove it before adding a new one
-    if (map.getSource('locationData')) {
-      map.removeSource('locationData');
     }
 
-    // Check if the layer already exists and remove it before adding a new one
-    if (map.getLayer('locationData')) {
-      map.removeLayer('locationData');
-    }
+    // Function to add GeoJSON layer to the map
+    function addGeoJSONLayer() {
+      // Check if the layer already exists and remove it before adding a new one
+      if (map.getSource('locationData')) {
+        map.removeSource('locationData');
+      }
 
-    map.addSource('locationData', {
-      type: 'geojson',
-      data: geojsonData,
-    });
+      // Check if the layer already exists and remove it before adding a new one
+      if (map.getLayer('locationData')) {
+        map.removeLayer('locationData');
+      }
 
-    map.addLayer({
-      id: 'locationData',
-      type: 'circle',
-      source: 'locationData', // Use the source ID instead of the data directly
-      paint: {
-        'circle-radius': 5, // size of circles
-        'circle-color': '#3D2E5D', // color of circles
-        'circle-stroke-color': 'white',
-        'circle-stroke-width': 1,
-        'circle-opacity': 0.7,
-      },
-    });
-
-    // Set up event listeners for interacting with the map data
-    setMapEventListeners();
-  }
-
-  // Function to set up event listeners for interacting with the map data
-  function setMapEventListeners() {
-    // Event listener for clicking on map features
-    map.on('click', 'locationData', (e) => {
-      const features = map.queryRenderedFeatures(e.point, {
-        layers: ['locationData'],
+      map.addSource('locationData', {
+        type: 'geojson',
+        data: geojsonData,
       });
-      console.log('Clicked feature:', features[0]);
-      if (!features.length) {
-        return;
-      }
-      const clickedPoint = features[0].geometry.coordinates;
-      flyToLocation(clickedPoint);
-      createPopup(features[0]);
-      const activeListing = document.getElementById(
-        'listing-' + features[0].properties.id
-      );
-      $(activeListing).addClass('active');
-      $(activeListing).siblings().removeClass('active');
-    });
+      console.log('GeoJSON source added:', geojsonData); // Add this console log
 
-    // Event listeners for mouseenter and mouseleave on map features
-    map.on('mouseenter', 'locationData', () => {
-      console.log('Mouse entered locationData layer');
-      map.getCanvas().style.cursor = 'pointer';
-    });
+      map.addLayer({
+        id: 'locationData',
+        type: 'circle',
+        source: 'locationData', // Use the source ID instead of the data directly
+        paint: {
+          'circle-radius': 5, // size of circles
+          'circle-color': '#3D2E5D', // color of circles
+          'circle-stroke-color': 'white',
+          'circle-stroke-width': 1,
+          'circle-opacity': 0.7,
+        },
+      });
+      console.log('GeoJSON layer added'); // Add this console log
 
-    map.on('mouseleave', 'locationData', () => {
-      console.log('Mouse left locationData layer');
-      map.getCanvas().style.cursor = '';
-    });
+      // Set up event listeners for interacting with the map data
+      setMapEventListeners();
+    }
 
-    // Build location list from GeoJSON data
-    buildLocationList(geojsonData);
-  }
-
-  // Function to build the location list
-  function buildLocationList(locationData) {
-    const listings = document.getElementById('listings');
-    listings.innerHTML = '';
-    locationData.features.forEach((location, i) => {
-      const prop = location.properties;
-
-      const listing = listings.appendChild(document.createElement('div'));
-      listing.id = 'listing-' + prop.id;
-      listing.className = 'item';
-
-      const link = listing.appendChild(document.createElement('button'));
-      link.className = 'title';
-      link.id = 'link-' + prop.id;
-      link.innerHTML =
-        '<p style="line-height: 1.25">' + prop[columnHeaders[0]] + '</p>';
-
-      const details = listing.appendChild(document.createElement('div'));
-      details.className = 'content';
-
-      for (let i = 1; i < columnHeaders.length; i++) {
-        const div = document.createElement('div');
-        div.innerText += prop[columnHeaders[i]];
-        details.appendChild(div);
-      }
-
-      link.addEventListener('click', function () {
-        const clickedListing = location.geometry.coordinates;
-        flyToLocation(clickedListing);
-        createPopup(location);
-
-        const activeItem = document.getElementsByClassName('active');
-        if (activeItem[0]) {
-          activeItem[0].classList.remove('active');
+    // Function to set up event listeners for interacting with the map data
+    function setMapEventListeners() {
+      // Event listener for clicking on map features
+      map.on('click', 'locationData', (e) => {
+        const features = map.queryRenderedFeatures(e.point, {
+          layers: ['locationData'],
+        });
+        console.log('Clicked feature:', features[0]);
+        if (!features.length) {
+          return;
         }
-        this.parentNode.classList.add('active');
+        const clickedPoint = features[0].geometry.coordinates;
+        flyToLocation(clickedPoint);
+        createPopup(features[0]);
+        const activeListing = document.getElementById(
+          'listing-' + features[0].properties.id
+        );
+        $(activeListing).addClass('active');
+        $(activeListing).siblings().removeClass('active');
+      });
 
-        const divList = document.querySelectorAll('.content');
-        const divCount = divList.length;
-        for (let i = 0; i < divCount; i++) {
-          divList[i].style.maxHeight = null;
+      // Event listeners for mouseenter and mouseleave on map features
+      map.on('mouseenter', 'locationData', () => {
+        console.log('Mouse entered locationData layer');
+        map.getCanvas().style.cursor = 'pointer';
+      });
+
+      map.on('mouseleave', 'locationData', () => {
+        console.log('Mouse left locationData layer');
+        map.getCanvas().style.cursor = '';
+      });
+
+      // Build location list from GeoJSON data
+      buildLocationList(geojsonData);
+    }
+
+    // Function to build the location list
+    function buildLocationList(locationData) {
+      const listings = document.getElementById('listings');
+      listings.innerHTML = '';
+      locationData.features.forEach((location, i) => {
+        const prop = location.properties;
+
+        const listing = listings.appendChild(document.createElement('div'));
+        listing.id = 'listing-' + prop.id;
+        listing.className = 'item';
+
+        const link = listing.appendChild(document.createElement('button'));
+        link.className = 'title';
+        link.id = 'link-' + prop.id;
+        link.innerHTML =
+          '<p style="line-height: 1.25">' + prop[columnHeaders[0]] + '</p>';
+
+        const details = listing.appendChild(document.createElement('div'));
+        details.className = 'content';
+
+        for (let i = 1; i < columnHeaders.length; i++) {
+          const div = document.createElement('div');
+          div.innerText += prop[columnHeaders[i]];
+          details.appendChild(div);
         }
 
-        for (let i = 0; i < locationData.features.length; i++) {
-          this.parentNode.classList.remove('active');
-          this.classList.toggle('active');
-          const content = this.nextElementSibling;
-          if (content.style.maxHeight) {
-            content.style.maxHeight = null;
-          } else {
-            content.style.maxHeight = content.scrollHeight + 'px';
+        link.addEventListener('click', function () {
+          const clickedListing = location.geometry.coordinates;
+          flyToLocation(clickedListing);
+          createPopup(location);
+
+          const activeItem = document.getElementsByClassName('active');
+          if (activeItem[0]) {
+            activeItem[0].classList.remove('active');
           }
-        }
+          this.parentNode.classList.add('active');
+
+          const divList = document.querySelectorAll('.content');
+          const divCount = divList.length;
+          for (let i = 0; i < divCount; i++) {
+            divList[i].style.maxHeight = null;
+          }
+
+          for (let i = 0; i < locationData.features.length; i++) {
+            this.parentNode.classList.remove('active');
+            this.classList.toggle('active');
+            const content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+              content.style.maxHeight = null;
+            } else {
+              content.style.maxHeight = content.scrollHeight + 'px';
+            }
+          }
+        });
       });
-    });
-  }
+    }
 
   // Add event listeners for sidebar toggle arrows
   document.getElementById('toggleLeft').addEventListener('click', function () {
@@ -331,7 +333,7 @@ map.on('load', () => {
   });
 
   // Load the default CSV
-  loadCsv(config.CSV1);
+  //loadCsv(config.CSV1);
 });
 
 // Function to display error message
