@@ -194,6 +194,11 @@ map.on('load', () => {
     };
     console.log('GeoJSON data:', geojsonData); // Add this console log
 
+    // Check if the source already exists and remove it before adding a new one
+    if (map.getSource('locationData')) {
+      map.removeSource('locationData');
+    }
+
     // Add the GeoJSON source to the map
     map.addSource('locationData', {
       type: 'geojson',
