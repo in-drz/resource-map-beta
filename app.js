@@ -184,15 +184,28 @@ map.on('load', () => {
     }
 
     // Create a GeoJSON object from the features
-    geojsonData = {
+    const geojsonData = {
       type: 'FeatureCollection',
       features: features,
     };
     console.log('GeoJSON data:', geojsonData); // Add this console log
 
+    // Remove existing source if it exists
+    if (map.getSource('locationData')) {
+      map.removeSource('locationData');
+    }
+
+    // Add the GeoJSON source to the map
+    map.addSource('locationData', {
+      type: 'geojson',
+      data: geojsonData,
+    });
+    console.log('GeoJSON source added:', geojsonData); // Add this console log
+
     // Add the GeoJSON layer to the map
     addGeoJSONLayer();
-    }
+  }
+
 
     // Function to add GeoJSON layer to the map
     function addGeoJSONLayer() {
