@@ -145,6 +145,7 @@ map.on('load', () => {
   }
 
   // Function to make GeoJSON from CSV data
+  // Function to make GeoJSON from CSV data
   function makeGeoJSON(csvData) {
     // Split the CSV data into rows
     const rows = csvData.split('\n');
@@ -186,8 +187,8 @@ map.on('load', () => {
       }
     }
 
-    // Create a GeoJSON object from the features
-    const geojsonData = {
+    // Update the global geojsonData variable
+    geojsonData = {
       type: 'FeatureCollection',
       features: features,
     };
@@ -208,6 +209,7 @@ map.on('load', () => {
     // Add the GeoJSON layer to the map
     addGeoJSONLayer();
   }
+
 
 
     // Function to add GeoJSON layer to the map
