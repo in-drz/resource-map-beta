@@ -194,19 +194,27 @@ map.on('load', () => {
   }
 
   // Function to add GeoJSON layer to the map
+  // Function to add GeoJSON layer to the map
   function addGeoJSONLayer() {
+    // Check if the layer already exists and remove it before adding a new one
+    if (map.getSource('locationData')) {
+      map.removeSource('locationData');
+    }
+
     // Check if the layer already exists and remove it before adding a new one
     if (map.getLayer('locationData')) {
       map.removeLayer('locationData');
     }
 
+    map.addSource('locationData', {
+      type: 'geojson',
+      data: geojsonData,
+    });
+
     map.addLayer({
       id: 'locationData',
       type: 'circle',
-      source: {
-        type: 'geojson',
-        data: geojsonData,
-      },
+      source: 'locationData', // Use the source ID instead of the data directly
       paint: {
         'circle-radius': 5, // size of circles
         'circle-color': '#3D2E5D', // color of circles
