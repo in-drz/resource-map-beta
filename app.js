@@ -213,15 +213,16 @@ map.on('load', () => {
 
 
     // Function to add GeoJSON layer to the map
+    // Function to add GeoJSON layer to the map
     function addGeoJSONLayer() {
-      // Check if the layer already exists and remove it before adding a new one
-      if (map.getSource('locationData')) {
-        map.removeSource('locationData');
-      }
-
       // Check if the layer already exists and remove it before adding a new one
       if (map.getLayer('locationData')) {
         map.removeLayer('locationData');
+      }
+
+      // Check if the source already exists and remove it before adding a new one
+      if (map.getSource('locationData')) {
+        map.removeSource('locationData');
       }
 
       map.addSource('locationData', {
@@ -247,6 +248,7 @@ map.on('load', () => {
       // Set up event listeners for interacting with the map data
       setMapEventListeners();
     }
+
 
     // Function to set up event listeners for interacting with the map data
     function setMapEventListeners() {
