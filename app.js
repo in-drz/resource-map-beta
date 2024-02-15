@@ -132,7 +132,10 @@ map.on('load', () => {
       url: csvPath,
       dataType: 'text',
       success: function(csvData) {
-        makeGeoJSON(csvData);
+      makeGeoJSON(csvData);
+
+      // Call buildLocationList after geojsonData is fully generated
+      buildLocationList(geojsonData);
       },
       error: function(request, status, error) {
         console.error('Error loading CSV:', error);
