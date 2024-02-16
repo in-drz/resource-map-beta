@@ -104,52 +104,55 @@ map.on('load', () => {
   console.log('Map loaded');
 
   function toggleCsvLayer(csvFilePath, layerId) {
-      // Check if the layer already exists
-      if (!map.getLayer(layerId)) {
-          // If the layer doesn't exist, load it
-          makeGeoJSON(csvFilePath, function(geojsonData) {
-              map.addSource(layerId, {
-                  type: 'geojson',
-                  data: geojsonData
-              });
+      // Ensure layerId is unique to avoid conflicts
+      const uniqueLayerId = layerId + new Date().getTime();
 
-              // Define colors for different layers
-              let circleColor;
-              switch(layerId) {
-                  case 'CSV1':
-                      circleColor = '#3D2E5D';
-                      break;
-                  case 'CSV2':
-                      circleColor = '#009688';
-                      break;
-                  case 'CSV3':
-                      circleColor = '#FF5722';
-                      break;
-                  case 'CSV4':
-                      circleColor = '#FFC107';
-                      break;
-                  case 'CSV5':
-                      circleColor = '#2196F3';
-                      break;
-                  default:
-                      circleColor = '#3D2E5D'; // Default color
-              }
-
-              map.addLayer({
-                  id: layerId,
-                  type: 'circle',
-                  source: layerId,
-                  paint: {
-                      'circle-radius': 5,
-                      'circle-color': circleColor, // Assign different colors based on layerId
-                      'circle-stroke-color': 'white',
-                      'circle-stroke-width': 1,
-                      'circle-opacity': 0.7
-                  }
-              });
+      // Load GeoJSON data from CSV file
+      makeGeoJSON(csvFilePath, function(geojsonData) {
+          // Add source for the layer
+          map.addSource(uniqueLayerId, {
+              type: 'geojson',
+              data: geojsonData
           });
-      }
+
+          // Define colors for different layers
+          let circleColor;
+          switch (uniqueLayerId) {
+              case 'CSV1':
+                  circleColor = '#3D2E5D';
+                  break;
+              case 'CSV2':
+                  circleColor = '#009688';
+                  break;
+              case 'CSV3':
+                  circleColor = '#FF5722';
+                  break;
+              case 'CSV4':
+                  circleColor = '#FFC107';
+                  break;
+              case 'CSV5':
+                  circleColor = '#2196F3';
+                  break;
+              default:
+                  circleColor = '#3D2E5D'; // Default color
+          }
+
+          // Add layer to the map
+          map.addLayer({
+              id: uniqueLayerId,
+              type: 'circle',
+              source: uniqueLayerId,
+              paint: {
+                  'circle-radius': 5,
+                  'circle-color': circleColor,
+                  'circle-stroke-color': 'white',
+                  'circle-stroke-width': 1,
+                  'circle-opacity': 0.7
+              }
+          });
+      });
   }
+
 
   // Function to populate the CSV dropdown
   function populateCsvCheckboxes() {
@@ -163,17 +166,18 @@ map.on('load', () => {
       console.log("Config object:", config); // Debugging line
       Object.keys(config).forEach((key) => {
           if (key.startsWith('CSV')) {
-              console.log("Adding checkbox for:", key); // Debugging line
+              const csvConfig = config[key]; // Access the CSV configuration
+              console.log("Adding checkbox for:", csvConfig.label); // Debugging line
               // Create checkbox element
               const checkbox = document.createElement('input');
               checkbox.type = 'checkbox';
               checkbox.id = key; // Use the key as the ID
-              checkbox.value = config[key]; // Use the value from config
+              checkbox.value = csvConfig.url; // Use the URL from config
 
               // Create label element
               const label = document.createElement('label');
               label.htmlFor = key;
-              label.textContent = key; // Or any other title you want to display
+              label.textContent = csvConfig.label; // Use the label from config
 
               // Append checkbox and label to the container
               container.appendChild(checkbox);
@@ -186,6 +190,7 @@ map.on('load', () => {
           }
       });
   }
+
 
 
 
