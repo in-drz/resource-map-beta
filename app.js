@@ -125,95 +125,107 @@ map.on('load', () => {
     loadCsv(selectedCsv);
   });
 
-  // Function to load CSV data
-
-  // Function to make GeoJSON from CSV data
-  // Function to make GeoJSON from CSV data
   // Function to make GeoJSON from CSV data
   function makeGeoJSON(currentCSV, callback) {
-    $.ajax({
-      type: 'GET',
-      url: currentCSV,
-      dataType: 'text',
-      success: function(csvData) {
-        csv2geojson.csv2geojson(
-          csvData,
-          {
-            latfield: 'Latitude',
-            lonfield: 'Longitude',
-            delimiter: ','
-          },
-          function(err, data) {
-            if (err) {
-              console.error('Error converting CSV to GeoJSON:', err);
-              return;
-            }
-
-            data.features.forEach(function(feature, i) {
-              feature.properties.id = i;
-            });
-
-            geojsonData = data;
-
-            // Remove existing layer/source if they exist
-            if (map.getLayer('locationData')) {
-              map.removeLayer('locationData');
-            }
-            if (map.getSource('locationData')) {
-              map.removeSource('locationData');
-            }
-
-            // Add source and layer to the map
-            map.addSource('locationData', {
-              type: 'geojson',
-              data: geojsonData
-            });
-
-            map.addLayer({
-              id: 'locationData',
-              type: 'circle',
-              source: 'locationData',
-              paint: {
-                'circle-radius': 5,
-                'circle-color': '#3D2E5D',
-                'circle-stroke-color': 'white',
-                'circle-stroke-width': 1,
-                'circle-opacity': 0.7
-              }
-            });
-
-            // Additional map event listeners can be added here
-            map.on('click', 'locationData', (e) => {
-              const features = map.queryRenderedFeatures(e.point, {
-                layers: ['locationData'],
+      $.ajax({
+          type: 'GET',
+          url: currentCSV,
+          dataType: 'text',
+          success: function(csvData) {
+              // Parse CSV data manually first
+              const parsedCsv = Papa.parse(csvData, {
+                  header: true,
+                  skipEmptyLines: true
               });
-              const clickedPoint = features[0].geometry.coordinates;
-              flyToLocation(clickedPoint);
-              sortByDistance(clickedPoint);
-              createPopup(features[0]);
-            });
 
-            map.on('mouseenter', 'locationData', () => {
-              map.getCanvas().style.cursor = 'pointer';
-            });
+              // Filter out entries with blank latitudes or longitudes
+              const filteredCsvData = parsedCsv.data.filter(function(row) {
+                  return row.Latitude && row.Longitude;
+              });
 
-            map.on('mouseleave', 'locationData', () => {
-              map.getCanvas().style.cursor = '';
-            });
-            
-            // Callback function to execute after geoJSON is ready
-            if (callback) {
-              callback();
-            }
+              // Convert to CSV string format again
+              const filteredCsvString = Papa.unparse(filteredCsvData);
+
+              // Convert filtered CSV string to GeoJSON
+              csv2geojson.csv2geojson(
+                  filteredCsvString,
+                  {
+                      latfield: 'Latitude',
+                      lonfield: 'Longitude',
+                      delimiter: ','
+                  },
+                  function(err, data) {
+                      if (err) {
+                          console.error('Error converting CSV to GeoJSON:', err);
+                          return;
+                      }
+
+                      data.features.forEach(function(feature, i) {
+                          feature.properties.id = i;
+                      });
+
+                      geojsonData = data;
+
+                      // Remove existing layer/source if they exist
+                      if (map.getLayer('locationData')) {
+                          map.removeLayer('locationData');
+                      }
+                      if (map.getSource('locationData')) {
+                          map.removeSource('locationData');
+                      }
+
+                      // Add source and layer to the map
+                      map.addSource('locationData', {
+                          type: 'geojson',
+                          data: geojsonData
+                      });
+
+                      map.addLayer({
+                          id: 'locationData',
+                          type: 'circle',
+                          source: 'locationData',
+                          paint: {
+                              'circle-radius': 5,
+                              'circle-color': '#3D2E5D',
+                              'circle-stroke-color': 'white',
+                              'circle-stroke-width': 1,
+                              'circle-opacity': 0.7
+                          }
+                      });
+
+                      // Additional map event listeners can be added here
+                      map.on('click', 'locationData', (e) => {
+                          const features = map.queryRenderedFeatures(e.point, {
+                              layers: ['locationData'],
+                          });
+                          const clickedPoint = features[0].geometry.coordinates;
+                          flyToLocation(clickedPoint);
+                          sortByDistance(clickedPoint);
+                          createPopup(features[0]);
+                      });
+
+                      map.on('mouseenter', 'locationData', () => {
+                          map.getCanvas().style.cursor = 'pointer';
+                      });
+
+                      map.on('mouseleave', 'locationData', () => {
+                          map.getCanvas().style.cursor = '';
+                      });
+
+                      // Callback function to execute after geoJSON is ready
+                      if (callback) {
+                          callback();
+                      }
+                  }
+              );
+          },
+          error: function(request, status, error) {
+              console.error('Error loading CSV:', error);
+              displayErrorMessage('Error loading CSV. Please try again.');
           }
-        );
-      },
-      error: function(request, status, error) {
-        console.error('Error loading CSV:', error);
-        displayErrorMessage('Error loading CSV. Please try again.');
-      }
-    });
+      });
   }
+
 
   // Function to load CSV data
   function loadCsv(csvPath) {
