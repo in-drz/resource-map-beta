@@ -146,145 +146,89 @@ map.on('load', () => {
 
   // Function to make GeoJSON from CSV data
   // Function to make GeoJSON from CSV data
-  function makeGeoJSON(csvData) {
-    // Split the CSV data into rows
-    const rows = csvData.split('\n');
-    console.log('CSV rows:', rows);
+  function makeGeoJSON(currentCSV) {
+    $.ajax({
+      type: 'GET',
+      url: currentCSV,
+      dataType: 'text',
+      success: function (csvData) {
+        csv2geojson.csv2geojson(
+          csvData,
+          {
+            latfield: 'Latitude',
+            lonfield: 'Longitude',
+            delimiter: ',',
+          },
+          (err, data) => {
+            if (err) {
+              console.error('Error converting CSV to GeoJSON:', err);
+              return;
+            }
 
-    // Initialize an array to store GeoJSON features
-    const features = [];
+            data.features.forEach((feature, i) => {
+              feature.properties.id = i;
+            });
 
-    // Iterate over each row of the CSV data
-    for (let i = 0; i < rows.length; i++) {
-      const row = rows[i];
+            geojsonData = data;
 
-      // Split the row into columns
-      const columns = row.split(',');
+            // Check if the source and layer already exists and remove them before adding new ones
+            if (map.getLayer('locationData')) {
+              map.removeLayer('locationData');
+            }
+            if (map.getSource('locationData')) {
+              map.removeSource('locationData');
+            }
 
-      // Check if the row has at least 15 columns and latitude and longitude are not empty or undefined
-      if (columns.length >= 15 && columns[13]?.trim() !== '' && columns[14]?.trim() !== '') {
-        // Parse latitude and longitude values
-        const latitude = parseFloat(columns[13].trim());
-        const longitude = parseFloat(columns[14].trim());
+            // Add the source and layer to the map
+            map.addSource('locationData', {
+              type: 'geojson',
+              data: geojsonData,
+            });
 
-        // Check if latitude and longitude values are valid numbers
-        if (!isNaN(latitude) && !isNaN(longitude)) {
-          // Create a GeoJSON feature
-          const feature = {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [longitude, latitude], // longitude, latitude
-            },
-            properties: {
-              id: i,
-            },
-          };
+            map.addLayer({
+              id: 'locationData',
+              type: 'circle',
+              source: 'locationData',
+              paint: {
+                'circle-radius': 5, // size of circles
+                'circle-color': '#3D2E5D', // color of circles
+                'circle-stroke-color': 'white',
+                'circle-stroke-width': 1,
+                'circle-opacity': 0.7,
+              },
+            });
 
-          // Add the feature to the array
-          features.push(feature);
-        }
-      }
-    }
+            map.on('click', 'locationData', (e) => {
+              const features = map.queryRenderedFeatures(e.point, {
+                layers: ['locationData'],
+              });
+              if (!features.length) {
+                return;
+              }
+              const clickedPoint = features[0].geometry.coordinates;
+              flyToLocation(clickedPoint);
+              sortByDistance(clickedPoint);
+              createPopup(features[0]);
+            });
 
-    // Update the global geojsonData variable
-    geojsonData = {
-      type: 'FeatureCollection',
-      features: features,
-    };
-    console.log('GeoJSON data:', geojsonData); // Add this console log
+            map.on('mouseenter', 'locationData', () => {
+              map.getCanvas().style.cursor = 'pointer';
+            });
 
-    // Check if the source already exists and remove it before adding a new one
-    if (map.getSource('locationData')) {
-      map.removeSource('locationData');
-    }
+            map.on('mouseleave', 'locationData', () => {
+              map.getCanvas().style.cursor = '';
+            });
 
-    // Add the GeoJSON source to the map
-    map.addSource('locationData', {
-      type: 'geojson',
-      data: geojsonData,
-    });
-    console.log('GeoJSON source added:', geojsonData); // Add this console log
-
-    // Add the GeoJSON layer to the map
-    addGeoJSONLayer();
-  }
-
-
-
-    // Function to add GeoJSON layer to the map
-    // Function to add GeoJSON layer to the map
-    function addGeoJSONLayer() {
-      // Check if the layer already exists and remove it before adding a new one
-      if (map.getLayer('locationData')) {
-        map.removeLayer('locationData');
-      }
-
-      // Check if the source already exists and remove it before adding a new one
-      if (map.getSource('locationData')) {
-        map.removeSource('locationData');
-      }
-
-      map.addSource('locationData', {
-        type: 'geojson',
-        data: geojsonData,
-      });
-      console.log('GeoJSON source added:', geojsonData); // Add this console log
-
-      map.addLayer({
-        id: 'locationData',
-        type: 'circle',
-        source: 'locationData', // Use the source ID instead of the data directly
-        paint: {
-          'circle-radius': 5, // size of circles
-          'circle-color': '#3D2E5D', // color of circles
-          'circle-stroke-color': 'white',
-          'circle-stroke-width': 1,
-          'circle-opacity': 0.7,
-        },
-      });
-      console.log('GeoJSON layer added'); // Add this console log
-
-      // Set up event listeners for interacting with the map data
-      setMapEventListeners();
-    }
-
-
-    // Function to set up event listeners for interacting with the map data
-    function setMapEventListeners() {
-      // Event listener for clicking on map features
-      map.on('click', 'locationData', (e) => {
-        const features = map.queryRenderedFeatures(e.point, {
-          layers: ['locationData'],
-        });
-        console.log('Clicked feature:', features[0]);
-        if (!features.length) {
-          return;
-        }
-        const clickedPoint = features[0].geometry.coordinates;
-        flyToLocation(clickedPoint);
-        createPopup(features[0]);
-        const activeListing = document.getElementById(
-          'listing-' + features[0].properties.id
+            buildLocationList(geojsonData);
+          },
         );
-        $(activeListing).addClass('active');
-        $(activeListing).siblings().removeClass('active');
-      });
-
-      // Event listeners for mouseenter and mouseleave on map features
-      map.on('mouseenter', 'locationData', () => {
-        console.log('Mouse entered locationData layer');
-        map.getCanvas().style.cursor = 'pointer';
-      });
-
-      map.on('mouseleave', 'locationData', () => {
-        console.log('Mouse left locationData layer');
-        map.getCanvas().style.cursor = '';
-      });
-
-      // Build location list from GeoJSON data
-      buildLocationList(geojsonData);
-    }
+      },
+      error: function (request, status, error) {
+        console.error('Error loading CSV:', error);
+        displayErrorMessage('Error loading CSV. Please try again.');
+      },
+    });
+  }
 
     // Function to build the location list
     function buildLocationList(locationData) {
