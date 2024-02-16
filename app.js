@@ -145,28 +145,33 @@ map.on('load', () => {
 
   // Function to populate the CSV dropdown
   function populateCsvCheckboxes() {
-      console.log("Populating CSV Checkboxes"); // Debugging line
+      console.log("Populating CSV Checkboxes");
       const container = document.getElementById('csvCheckboxList');
       if (!container) {
           console.error("Container not found");
           return;
       }
-      console.log("Container found:", container); // Debugging line
-      console.log("Config object:", config); // Debugging line
+      console.log("Container found:", container);
+      console.log("Config object:", config);
       Object.keys(config).forEach((key) => {
           if (key.startsWith('CSV')) {
-              const csvConfig = config[key]; // Access the CSV configuration
-              console.log("Adding checkbox for:", csvConfig.label); // Debugging line
+              const csvConfig = config[key];
+              console.log("Adding checkbox for:", csvConfig.label);
+              // Create unique source ID by appending key to 'source'
+              const uniqueSourceId = 'source-' + key;
+              // Create unique layer ID by appending key to 'layer'
+              const uniqueLayerId = 'layer-' + key;
+
               // Create checkbox element
               const checkbox = document.createElement('input');
               checkbox.type = 'checkbox';
-              checkbox.id = key; // Use the key as the ID
-              checkbox.value = csvConfig.url; // Use the URL from config
+              checkbox.id = uniqueLayerId; // Use the unique layer ID
+              checkbox.value = csvConfig.url;
 
               // Create label element
               const label = document.createElement('label');
-              label.htmlFor = key;
-              label.textContent = csvConfig.label; // Use the label from config
+              label.htmlFor = uniqueLayerId;
+              label.textContent = csvConfig.label;
 
               // Append checkbox and label to the container
               container.appendChild(checkbox);
@@ -174,12 +179,11 @@ map.on('load', () => {
 
               // Add event listener to the checkbox
               checkbox.addEventListener('change', function() {
-                  toggleCsvLayer(this.value, key);
+                  toggleCsvLayer(this.value, uniqueSourceId); // Pass unique source ID
               });
           }
       });
   }
-
 
 
 
