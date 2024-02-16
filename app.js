@@ -400,29 +400,3 @@ $('#menu-toggle').on('click', function(e) {
   e.preventDefault();
   $('#wrapper').toggleClass('toggled');
 });
-
-// Event listener for weather toggle checkbox
-document.getElementById('weatherToggle').addEventListener('change', function() {
-  const radarLayerId = 'weather-radar';
-  if (this.checked) {
-    // Add radar layer to the map
-    map.addLayer({
-      id: radarLayerId,
-      type: 'raster',
-      source: {
-        type: 'raster',
-        tiles: [
-          'https://api.openweathermap.org/data/3.0/onecall?lat=34.049157&lon=-118.254643&exclude={part}&appid=13b7a33f1b10f254853164c4b2d67c71',
-        ],
-        tileSize: 256,
-      },
-      minzoom: 1,
-      maxzoom: 19,
-    });
-  } else {
-    // Remove radar layer from the map
-    if (map.getLayer(radarLayerId)) {
-      map.removeLayer(radarLayerId);
-    }
-  }
-});
