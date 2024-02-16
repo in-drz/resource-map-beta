@@ -171,9 +171,7 @@ map.on('load', () => {
 
 
   // Call this function when initializing your application
-  document.addEventListener('DOMContentLoaded', function() {
-      populateCsvCheckboxes();
-  });
+populateCsvCheckboxes();
 
   // Event listener for CSV dropdown change
 /*  document.getElementById('csvDropdown').addEventListener('change', function() {
