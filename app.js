@@ -104,6 +104,9 @@ map.on('load', () => {
   console.log('Map loaded');
 
   // Define a mapping between layerId and colors
+  const activeLayers = []; // Maintain a list of active layer IDs
+
+
   const layerIdColorMap = {
       'CSV1': '#3D2E5D',
       'CSV2': '#009688',
@@ -111,7 +114,7 @@ map.on('load', () => {
       'CSV4': '#FFC107',
       'CSV5': '#2196F3'
   };
-
+  
   function toggleCsvLayer(csvFilePath, layerId) {
       // Ensure layerId is unique to avoid conflicts
       const uniqueLayerId = layerId + new Date().getTime();
@@ -140,7 +143,19 @@ map.on('load', () => {
                   'circle-opacity': 0.7
               }
           });
+
+          // Add the new layer ID to the list of active layers
+          activeLayers.push(uniqueLayerId);
       });
+  }
+
+  // Function to remove all active layers from the map
+  function removeAllLayers() {
+      activeLayers.forEach(layerId => {
+          map.removeLayer(layerId);
+          map.removeSource(layerId);
+      });
+      activeLayers.length = 0; // Clear the array
   }
 
   // Function to populate the CSV dropdown
@@ -318,63 +333,68 @@ populateCsvCheckboxes();
 
 
   function buildLocationList(locationData) {
-    const listings = document.getElementById('listings');
-    listings.innerHTML = '';
+      const listings = document.getElementById('listings');
+      listings.innerHTML = '';
 
-    // Check if locationData.features is defined and is an array
-    if (locationData && Array.isArray(locationData.features)) {
-      locationData.features.forEach((location, i) => {
-        const prop = location.properties;
+      // Check if locationData.features is defined and is an array
+      if (locationData && locationData.features && Array.isArray(locationData.features)) {
+          locationData.features.forEach((location, i) => {
+              const prop = location.properties;
 
-        const listing = listings.appendChild(document.createElement('div'));
-        listing.id = 'listing-' + prop.id;
-        listing.className = 'item';
+              const listing = document.createElement('div');
+              listing.id = 'listing-' + prop.id;
+              listing.className = 'item';
 
-        const link = listing.appendChild(document.createElement('button'));
-        link.className = 'title';
-        link.id = 'link-' + prop.id;
-        link.innerHTML = '<p style="line-height: 1.25">' + prop[columnHeaders[0]] + '</p>';
+              const link = document.createElement('button');
+              link.className = 'title';
+              link.id = 'link-' + prop.id;
+              link.innerHTML = '<p style="line-height: 1.25">' + prop[columnHeaders[0]] + '</p>';
 
-        const details = listing.appendChild(document.createElement('div'));
-        details.className = 'content';
+              const details = document.createElement('div');
+              details.className = 'content';
 
-        for (let j = 1; j < columnHeaders.length; j++) {
-          const div = document.createElement('div');
-          div.innerText += prop[columnHeaders[j]];
-          details.appendChild(div);
-        }
+              for (let j = 1; j < columnHeaders.length; j++) {
+                  const div = document.createElement('div');
+                  div.innerText += prop[columnHeaders[j]];
+                  details.appendChild(div);
+              }
 
-        link.addEventListener('click', function () {
-          const clickedListing = location.geometry.coordinates;
-          flyToLocation(clickedListing);
-          createPopup(location);
+              link.addEventListener('click', function () {
+                  const clickedListing = location.geometry.coordinates;
+                  flyToLocation(clickedListing);
+                  createPopup(location);
 
-          const activeItem = document.getElementsByClassName('active');
-          if (activeItem[0]) {
-            activeItem[0].classList.remove('active');
-          }
-          this.parentNode.classList.add('active');
+                  const activeItem = document.getElementsByClassName('active');
+                  if (activeItem[0]) {
+                      activeItem[0].classList.remove('active');
+                  }
+                  this.parentNode.classList.add('active');
 
-          const divList = document.querySelectorAll('.content');
-          const divCount = divList.length;
-          for (let k = 0; k < divCount; k++) {
-            divList[k].style.maxHeight = null;
-          }
+                  const divList = document.querySelectorAll('.content');
+                  const divCount = divList.length;
+                  for (let k = 0; k < divCount; k++) {
+                      divList[k].style.maxHeight = null;
+                  }
 
-          this.parentNode.classList.toggle('active');
-          const content = this.nextElementSibling;
-          if (content.style.maxHeight) {
-            content.style.maxHeight = null;
-          } else {
-            content.style.maxHeight = content.scrollHeight + 'px';
-          }
-        });
-      });
-    } else {
-      console.error('Invalid or empty GeoJSON data');
-      // Handle the scenario of invalid or empty data here
-    }
+                  this.parentNode.classList.toggle('active');
+                  const content = this.nextElementSibling;
+                  if (content.style.maxHeight) {
+                      content.style.maxHeight = null;
+                  } else {
+                      content.style.maxHeight = content.scrollHeight + 'px';
+                  }
+              });
+
+              listing.appendChild(link);
+              listing.appendChild(details);
+              listings.appendChild(listing);
+          });
+      } else {
+          console.error('Invalid or empty GeoJSON data');
+          // Handle the scenario of invalid or empty data here
+      }
   }
+
 
   // Add event listeners for sidebar toggle arrows
   document.getElementById('toggleLeft').addEventListener('click', function () {
@@ -386,8 +406,6 @@ populateCsvCheckboxes();
   });
 
   // Load the default CSV
-  loadCsv(config.CSV1);
-});
 
 // Function to display error message
 function displayErrorMessage(message) {
