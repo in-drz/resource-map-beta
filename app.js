@@ -104,11 +104,8 @@ map.on('load', () => {
   console.log('Map loaded');
 
   function toggleCsvLayer(csvFilePath, layerId) {
-      if (map.getLayer(layerId)) {
-          // If the layer exists, remove it
-          map.removeLayer(layerId);
-          map.removeSource(layerId);
-      } else {
+      // Check if the layer already exists
+      if (!map.getLayer(layerId)) {
           // If the layer doesn't exist, load it
           makeGeoJSON(csvFilePath, function(geojsonData) {
               map.addSource(layerId, {
@@ -116,13 +113,35 @@ map.on('load', () => {
                   data: geojsonData
               });
 
+              // Define colors for different layers
+              let circleColor;
+              switch(layerId) {
+                  case 'CSV1':
+                      circleColor = '#3D2E5D';
+                      break;
+                  case 'CSV2':
+                      circleColor = '#009688';
+                      break;
+                  case 'CSV3':
+                      circleColor = '#FF5722';
+                      break;
+                  case 'CSV4':
+                      circleColor = '#FFC107';
+                      break;
+                  case 'CSV5':
+                      circleColor = '#2196F3';
+                      break;
+                  default:
+                      circleColor = '#3D2E5D'; // Default color
+              }
+
               map.addLayer({
                   id: layerId,
                   type: 'circle',
                   source: layerId,
                   paint: {
                       'circle-radius': 5,
-                      'circle-color': '#3D2E5D', // Different colors for different layers
+                      'circle-color': circleColor, // Assign different colors based on layerId
                       'circle-stroke-color': 'white',
                       'circle-stroke-width': 1,
                       'circle-opacity': 0.7
