@@ -207,8 +207,15 @@ populateCsvCheckboxes();
 
               // Filter out entries with blank latitudes or longitudes
               const filteredCsvData = parsedCsv.data.filter(function(row) {
-                  return row.Latitude && row.Longitude;
+                  return row.Latitude !== '' && row.Longitude !== '';
               });
+
+              // Check if any valid data is present
+              if (filteredCsvData.length === 0) {
+                  console.error('No valid data found in CSV');
+                  displayErrorMessage('No valid data found in CSV');
+                  return;
+              }
 
               // Convert to CSV string format again
               const filteredCsvString = Papa.unparse(filteredCsvData);
@@ -224,6 +231,7 @@ populateCsvCheckboxes();
                   function(err, data) {
                       if (err) {
                           console.error('Error converting CSV to GeoJSON:', err);
+                          displayErrorMessage('Error converting CSV to GeoJSON. Please try again.');
                           return;
                       }
 
