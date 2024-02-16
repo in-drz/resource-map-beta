@@ -230,10 +230,12 @@ map.on('load', () => {
     });
   }
 
-    // Function to build the location list
-    function buildLocationList(locationData) {
-      const listings = document.getElementById('listings');
-      listings.innerHTML = '';
+  function buildLocationList(locationData) {
+    const listings = document.getElementById('listings');
+    listings.innerHTML = '';
+
+    // Check if locationData.features is defined and is an array
+    if (locationData && Array.isArray(locationData.features)) {
       locationData.features.forEach((location, i) => {
         const prop = location.properties;
 
@@ -244,15 +246,14 @@ map.on('load', () => {
         const link = listing.appendChild(document.createElement('button'));
         link.className = 'title';
         link.id = 'link-' + prop.id;
-        link.innerHTML =
-          '<p style="line-height: 1.25">' + prop[columnHeaders[0]] + '</p>';
+        link.innerHTML = '<p style="line-height: 1.25">' + prop[columnHeaders[0]] + '</p>';
 
         const details = listing.appendChild(document.createElement('div'));
         details.className = 'content';
 
-        for (let i = 1; i < columnHeaders.length; i++) {
+        for (let j = 1; j < columnHeaders.length; j++) {
           const div = document.createElement('div');
-          div.innerText += prop[columnHeaders[i]];
+          div.innerText += prop[columnHeaders[j]];
           details.appendChild(div);
         }
 
@@ -269,23 +270,24 @@ map.on('load', () => {
 
           const divList = document.querySelectorAll('.content');
           const divCount = divList.length;
-          for (let i = 0; i < divCount; i++) {
-            divList[i].style.maxHeight = null;
+          for (let k = 0; k < divCount; k++) {
+            divList[k].style.maxHeight = null;
           }
 
-          for (let i = 0; i < locationData.features.length; i++) {
-            this.parentNode.classList.remove('active');
-            this.classList.toggle('active');
-            const content = this.nextElementSibling;
-            if (content.style.maxHeight) {
-              content.style.maxHeight = null;
-            } else {
-              content.style.maxHeight = content.scrollHeight + 'px';
-            }
+          this.parentNode.classList.toggle('active');
+          const content = this.nextElementSibling;
+          if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+          } else {
+            content.style.maxHeight = content.scrollHeight + 'px';
           }
         });
       });
+    } else {
+      console.error('Invalid or empty GeoJSON data');
+      // Handle the scenario of invalid or empty data here
     }
+  }
 
   // Add event listeners for sidebar toggle arrows
   document.getElementById('toggleLeft').addEventListener('click', function () {
