@@ -103,21 +103,78 @@ map.on('load', () => {
   map.addControl(geocoder, 'top-right');
   console.log('Map loaded');
 
-  // Populate the CSV dropdown
-  populateCsvDropdown();
+  function toggleCsvLayer(csvFilePath, layerId) {
+      if (map.getLayer(layerId)) {
+          // If the layer exists, remove it
+          map.removeLayer(layerId);
+          map.removeSource(layerId);
+      } else {
+          // If the layer doesn't exist, load it
+          makeGeoJSON(csvFilePath, function(geojsonData) {
+              map.addSource(layerId, {
+                  type: 'geojson',
+                  data: geojsonData
+              });
+
+              map.addLayer({
+                  id: layerId,
+                  type: 'circle',
+                  source: layerId,
+                  paint: {
+                      'circle-radius': 5,
+                      'circle-color': '#3D2E5D', // Different colors for different layers
+                      'circle-stroke-color': 'white',
+                      'circle-stroke-width': 1,
+                      'circle-opacity': 0.7
+                  }
+              });
+          });
+      }
+  }
+
+  // Event listeners for checkboxes
+  document.getElementById('CSV1').addEventListener('change', function() {
+      toggleCsvLayer(this.value, 'CSV1');
+  });
+
+  document.getElementById('CSV2').addEventListener('change', function() {
+      toggleCsvLayer(this.value, 'CSV2');
+  });
+
 
   // Function to populate the CSV dropdown
-  function populateCsvDropdown() {
-    const dropdown = document.getElementById('csvDropdown');
-    Object.keys(config).forEach(key => {
-      if (key.startsWith('CSV')) { // Check if the key starts with 'CSV'
-        const option = document.createElement('option');
-        option.value = config[key];
-        option.textContent = key;
-        dropdown.appendChild(option);
-      }
-    });
+  function populateCsvCheckboxes() {
+      const container = document.getElementById('csvCheckboxList');
+      Object.keys(config).forEach((key, index) => {
+          if (key.startsWith('CSV')) {
+              const checkboxId = `csvLayer${index}`;
+
+              // Create checkbox element
+              const checkbox = document.createElement('input');
+              checkbox.type = 'checkbox';
+              checkbox.id = checkboxId;
+              checkbox.value = config[key];
+
+              // Create label element
+              const label = document.createElement('label');
+              label.htmlFor = checkboxId;
+              label.textContent = key; // Or any other title you want to display
+
+              // Append checkbox and label to the container
+              container.appendChild(checkbox);
+              container.appendChild(label);
+
+              // Add event listener to the checkbox
+              checkbox.addEventListener('change', function() {
+                  toggleCsvLayer(this.value, checkboxId);
+              });
+          }
+      });
   }
+
+  // Call this function when initializing your application
+  populateCsvCheckboxes();
+
 
   // Event listener for CSV dropdown change
   document.getElementById('csvDropdown').addEventListener('change', function() {

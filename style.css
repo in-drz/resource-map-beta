@@ -162,39 +162,18 @@
     margin-top: 0;
 }
 
-#csvDropdown {
-    width: 100%;
-    padding: 12px; /* Increase padding for better touch support */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    font-size: 16px;
-    color: #333;
+#csvCheckboxList {
+    /* Add styles for the checkbox list container */
 }
 
-#csvDropdown option {
-    background-color: #fff;
-    color: #333;
+#csvCheckboxList label {
+    /* Add styles for each label */
+    display: block;
+    margin-bottom: 5px;
 }
 
-/* Style the dropdown arrow */
-#csvDropdown::after {
-    content: '\25BC';
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-}
-
-/* Style the dropdown arrow when dropdown is open */
-#csvDropdown.open::after {
-    content: '\25B2';
-}
-
-/* Style the dropdown when it is open */
-#csvDropdown.open {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+#csvCheckboxList input[type="checkbox"] {
+    /* Add styles for checkboxes */
 }
 
 #listings {
