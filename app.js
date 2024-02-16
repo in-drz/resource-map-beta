@@ -183,7 +183,24 @@ map.on('load', () => {
             });
 
             // Additional map event listeners can be added here
+            map.on('click', 'locationData', (e) => {
+              const features = map.queryRenderedFeatures(e.point, {
+                layers: ['locationData'],
+              });
+              const clickedPoint = features[0].geometry.coordinates;
+              flyToLocation(clickedPoint);
+              sortByDistance(clickedPoint);
+              createPopup(features[0]);
+            });
 
+            map.on('mouseenter', 'locationData', () => {
+              map.getCanvas().style.cursor = 'pointer';
+            });
+
+            map.on('mouseleave', 'locationData', () => {
+              map.getCanvas().style.cursor = '';
+            });
+            
             // Callback function to execute after geoJSON is ready
             if (callback) {
               callback();
