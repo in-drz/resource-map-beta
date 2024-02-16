@@ -126,16 +126,70 @@ map.on('load', () => {
   });
 
   // Function to load CSV data
-  function loadCsv(csvPath) {
+
+  // Function to make GeoJSON from CSV data
+  // Function to make GeoJSON from CSV data
+  // Function to make GeoJSON from CSV data
+  function makeGeoJSON(currentCSV, callback) {
     $.ajax({
       type: 'GET',
-      url: csvPath,
+      url: currentCSV,
       dataType: 'text',
       success: function(csvData) {
-      makeGeoJSON(csvData);
+        csv2geojson.csv2geojson(
+          csvData,
+          {
+            latfield: 'Latitude',
+            lonfield: 'Longitude',
+            delimiter: ','
+          },
+          function(err, data) {
+            if (err) {
+              console.error('Error converting CSV to GeoJSON:', err);
+              return;
+            }
 
-      // Call buildLocationList after geojsonData is fully generated
-      buildLocationList(geojsonData);
+            data.features.forEach(function(feature, i) {
+              feature.properties.id = i;
+            });
+
+            geojsonData = data;
+
+            // Remove existing layer/source if they exist
+            if (map.getLayer('locationData')) {
+              map.removeLayer('locationData');
+            }
+            if (map.getSource('locationData')) {
+              map.removeSource('locationData');
+            }
+
+            // Add source and layer to the map
+            map.addSource('locationData', {
+              type: 'geojson',
+              data: geojsonData
+            });
+
+            map.addLayer({
+              id: 'locationData',
+              type: 'circle',
+              source: 'locationData',
+              paint: {
+                'circle-radius': 5,
+                'circle-color': '#3D2E5D',
+                'circle-stroke-color': 'white',
+                'circle-stroke-width': 1,
+                'circle-opacity': 0.7
+              }
+            });
+
+            // Additional map event listeners can be added here
+
+            // Callback function to execute after geoJSON is ready
+            if (callback) {
+              callback();
+            }
+          }
+        );
       },
       error: function(request, status, error) {
         console.error('Error loading CSV:', error);
@@ -144,91 +198,14 @@ map.on('load', () => {
     });
   }
 
-  // Function to make GeoJSON from CSV data
-  // Function to make GeoJSON from CSV data
-  function makeGeoJSON(currentCSV) {
-    $.ajax({
-      type: 'GET',
-      url: currentCSV,
-      dataType: 'text',
-      success: function (csvData) {
-        csv2geojson.csv2geojson(
-          csvData,
-          {
-            latfield: 'Latitude',
-            lonfield: 'Longitude',
-            delimiter: ',',
-          },
-          (err, data) => {
-            if (err) {
-              console.error('Error converting CSV to GeoJSON:', err);
-              return;
-            }
-
-            data.features.forEach((feature, i) => {
-              feature.properties.id = i;
-            });
-
-            geojsonData = data;
-
-            // Check if the source and layer already exists and remove them before adding new ones
-            if (map.getLayer('locationData')) {
-              map.removeLayer('locationData');
-            }
-            if (map.getSource('locationData')) {
-              map.removeSource('locationData');
-            }
-
-            // Add the source and layer to the map
-            map.addSource('locationData', {
-              type: 'geojson',
-              data: geojsonData,
-            });
-
-            map.addLayer({
-              id: 'locationData',
-              type: 'circle',
-              source: 'locationData',
-              paint: {
-                'circle-radius': 5, // size of circles
-                'circle-color': '#3D2E5D', // color of circles
-                'circle-stroke-color': 'white',
-                'circle-stroke-width': 1,
-                'circle-opacity': 0.7,
-              },
-            });
-
-            map.on('click', 'locationData', (e) => {
-              const features = map.queryRenderedFeatures(e.point, {
-                layers: ['locationData'],
-              });
-              if (!features.length) {
-                return;
-              }
-              const clickedPoint = features[0].geometry.coordinates;
-              flyToLocation(clickedPoint);
-              sortByDistance(clickedPoint);
-              createPopup(features[0]);
-            });
-
-            map.on('mouseenter', 'locationData', () => {
-              map.getCanvas().style.cursor = 'pointer';
-            });
-
-            map.on('mouseleave', 'locationData', () => {
-              map.getCanvas().style.cursor = '';
-            });
-
-            buildLocationList(geojsonData);
-          },
-        );
-      },
-      error: function (request, status, error) {
-        console.error('Error loading CSV:', error);
-        displayErrorMessage('Error loading CSV. Please try again.');
-      },
+  // Function to load CSV data
+  function loadCsv(csvPath) {
+    makeGeoJSON(csvPath, function() {
+      // Call buildLocationList after GeoJSON data is ready
+      buildLocationList(geojsonData);
     });
   }
+
 
   function buildLocationList(locationData) {
     const listings = document.getElementById('listings');
