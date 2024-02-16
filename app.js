@@ -419,4 +419,4 @@ $('#menu-toggle').on('click', function(e) {
   $('#wrapper').toggleClass('toggled');
 });
 
-}
+});
