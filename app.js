@@ -170,12 +170,12 @@ map.on('load', () => {
   document.addEventListener('DOMContentLoaded', function() {
       populateCsvCheckboxes();
   });
-  
+
   // Event listener for CSV dropdown change
-  document.getElementById('csvDropdown').addEventListener('change', function() {
+/*  document.getElementById('csvDropdown').addEventListener('change', function() {
     const selectedCsv = this.value;
     loadCsv(selectedCsv);
-  });
+  }); */
 
   // Function to make GeoJSON from CSV data
   function makeGeoJSON(currentCSV, callback) {
