@@ -172,3 +172,18 @@
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
+
+#listings {
+    max-height: 60vh; /* Adjust as needed */
+    overflow-y: auto; /* Add vertical scrollbar if content overflows */
+}
+
+#sidebarB {
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    width: 300px; /* Adjust width as needed */
+    height: 100%;
+    background-color: #F9D50B;
+    border-right: 1px solid #ccc;
+    overflow: hidden; /* Hide overflow */
+}
