@@ -299,7 +299,9 @@ populateCsvCheckboxes();
               );
           },
           error: function(request, status, error) {
-              console.error('Error loading CSV:', error);
+              console.error('Error loading CSV - Request:', request);
+              console.error('Error loading CSV - Status:', status);
+              console.error('Error loading CSV - Error:', error);
               displayErrorMessage('Error loading CSV. Please try again.');
           }
       });
