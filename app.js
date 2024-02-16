@@ -103,6 +103,15 @@ map.on('load', () => {
   map.addControl(geocoder, 'top-right');
   console.log('Map loaded');
 
+  // Define a mapping between layerId and colors
+  const layerIdColorMap = {
+      'CSV1': '#3D2E5D',
+      'CSV2': '#009688',
+      'CSV3': '#FF5722',
+      'CSV4': '#FFC107',
+      'CSV5': '#2196F3'
+  };
+
   function toggleCsvLayer(csvFilePath, layerId) {
       // Ensure layerId is unique to avoid conflicts
       const uniqueLayerId = layerId + new Date().getTime();
@@ -115,27 +124,8 @@ map.on('load', () => {
               data: geojsonData
           });
 
-          // Define colors for different layers
-          let circleColor;
-          switch (uniqueLayerId) {
-              case 'CSV1':
-                  circleColor = '#3D2E5D';
-                  break;
-              case 'CSV2':
-                  circleColor = '#009688';
-                  break;
-              case 'CSV3':
-                  circleColor = '#FF5722';
-                  break;
-              case 'CSV4':
-                  circleColor = '#FFC107';
-                  break;
-              case 'CSV5':
-                  circleColor = '#2196F3';
-                  break;
-              default:
-                  circleColor = '#3D2E5D'; // Default color
-          }
+          // Get circleColor from layerIdColorMap or default to '#3D2E5D'
+          const circleColor = layerIdColorMap[layerId] || '#3D2E5D';
 
           // Add layer to the map
           map.addLayer({
@@ -152,7 +142,6 @@ map.on('load', () => {
           });
       });
   }
-
 
   // Function to populate the CSV dropdown
   function populateCsvCheckboxes() {
