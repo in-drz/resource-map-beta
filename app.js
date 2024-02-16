@@ -134,14 +134,16 @@ map.on('load', () => {
 
   // Function to populate the CSV dropdown
   function populateCsvCheckboxes() {
+      console.log("Populating CSV Checkboxes"); // Debugging line
       const container = document.getElementById('csvCheckboxList');
       if (!container) {
-          console.error("csvCheckboxList container not found");
+          console.error("Container not found");
           return;
       }
-
+      console.log(config); // Check the config object
       Object.keys(config).forEach((key) => {
           if (key.startsWith('CSV')) {
+              console.log("Adding checkbox for:", key); // Debugging line
               // Create checkbox element
               const checkbox = document.createElement('input');
               checkbox.type = 'checkbox';
