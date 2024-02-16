@@ -132,32 +132,25 @@ map.on('load', () => {
       }
   }
 
-  // Event listeners for checkboxes
-  document.getElementById('CSV1').addEventListener('change', function() {
-      toggleCsvLayer(this.value, 'CSV1');
-  });
-
-  document.getElementById('CSV2').addEventListener('change', function() {
-      toggleCsvLayer(this.value, 'CSV2');
-  });
-
-
   // Function to populate the CSV dropdown
   function populateCsvCheckboxes() {
       const container = document.getElementById('csvCheckboxList');
-      Object.keys(config).forEach((key, index) => {
-          if (key.startsWith('CSV')) {
-              const checkboxId = `csvLayer${index}`;
+      if (!container) {
+          console.error("csvCheckboxList container not found");
+          return;
+      }
 
+      Object.keys(config).forEach((key) => {
+          if (key.startsWith('CSV')) {
               // Create checkbox element
               const checkbox = document.createElement('input');
               checkbox.type = 'checkbox';
-              checkbox.id = checkboxId;
-              checkbox.value = config[key];
+              checkbox.id = key; // Use the key as the ID
+              checkbox.value = config[key]; // Use the value from config
 
               // Create label element
               const label = document.createElement('label');
-              label.htmlFor = checkboxId;
+              label.htmlFor = key;
               label.textContent = key; // Or any other title you want to display
 
               // Append checkbox and label to the container
@@ -166,16 +159,18 @@ map.on('load', () => {
 
               // Add event listener to the checkbox
               checkbox.addEventListener('change', function() {
-                  toggleCsvLayer(this.value, checkboxId);
+                  toggleCsvLayer(this.value, key);
               });
           }
       });
   }
 
+
   // Call this function when initializing your application
-  populateCsvCheckboxes();
-
-
+  document.addEventListener('DOMContentLoaded', function() {
+      populateCsvCheckboxes();
+  });
+  
   // Event listener for CSV dropdown change
   document.getElementById('csvDropdown').addEventListener('change', function() {
     const selectedCsv = this.value;
