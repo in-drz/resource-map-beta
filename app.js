@@ -140,7 +140,8 @@ map.on('load', () => {
           console.error("Container not found");
           return;
       }
-      console.log(config); // Check the config object
+      console.log("Container found:", container); // Debugging line
+      console.log("Config object:", config); // Debugging line
       Object.keys(config).forEach((key) => {
           if (key.startsWith('CSV')) {
               console.log("Adding checkbox for:", key); // Debugging line
@@ -166,6 +167,7 @@ map.on('load', () => {
           }
       });
   }
+
 
 
   // Call this function when initializing your application
