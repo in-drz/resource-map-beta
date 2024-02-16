@@ -114,7 +114,7 @@ map.on('load', () => {
       'CSV4': '#FFC107',
       'CSV5': '#2196F3'
   };
-  
+
   function toggleCsvLayer(csvFilePath, layerId) {
       // Ensure layerId is unique to avoid conflicts
       const uniqueLayerId = layerId + new Date().getTime();
@@ -418,3 +418,5 @@ $('#menu-toggle').on('click', function(e) {
   e.preventDefault();
   $('#wrapper').toggleClass('toggled');
 });
+
+}
