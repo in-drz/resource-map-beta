@@ -179,7 +179,7 @@ map.on('load', () => {
       }
   }
 
-  
+
 
   // Function to populate the CSV dropdown
   function populateCsvCheckboxes() {
@@ -436,7 +436,8 @@ map.on('load', () => {
       });
   }
 
-
+  toggleCsvLayer();
+  
   // Add event listeners for sidebar toggle arrows
   document.getElementById('toggleLeft').addEventListener('click', function () {
     document.getElementById('sidebarB').classList.add('collapsed');
