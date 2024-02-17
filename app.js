@@ -116,22 +116,23 @@ map.on('load', () => {
   };
 
 
+  // Track checked checkboxes
+  const checkedCheckboxes = {};
+
+  // Function to toggle CSV layer
   function toggleCsvLayer() {
+      removeAllLayers(); // Remove all existing layers
       const checkboxes = document.querySelectorAll('input[type="checkbox"]');
       checkboxes.forEach(checkbox => {
-          const csvFilePath = checkbox.value;
-          const layerId = checkbox.id.replace('layer-', '');
+          checkedCheckboxes[checkbox.value] = checkbox.checked;
           if (checkbox.checked) {
-              addCsvLayer(csvFilePath, layerId, function(geojsonData) {
-                  buildLocationList(geojsonData);
-              });
-          } else {
-              const uniqueLayerId = activeLayers.find(id => id.startsWith(layerId));
-              if (uniqueLayerId) {
-                  removeLayer(uniqueLayerId);
-              }
+              const csvFilePath = checkbox.value;
+              const layerId = checkbox.id.replace('layer-', ''); // Extract layerId from checkbox ID
+              addCsvLayer(csvFilePath, layerId);
           }
       });
+      // Rebuild location list based on checked checkboxes
+      buildLocationList();
   }
 
   function attachCheckboxEventListeners() {
@@ -393,8 +394,8 @@ map.on('load', () => {
     });
   }
 
-
-  function buildLocationList(locationData) {
+  // Function to build location list based on checked checkboxes
+  function buildLocationList() {
       const listings = document.getElementById('listings');
       if (!listings) {
           console.error('Listings element not found in the DOM');
@@ -403,64 +404,90 @@ map.on('load', () => {
       listings.innerHTML = '';
 
       // Ensure locationData.features is properly structured
-      if (!locationData || !locationData.features || !Array.isArray(locationData.features)) {
+      if (!geojsonData || !geojsonData.features || !Array.isArray(geojsonData.features)) {
           console.error('Invalid or empty GeoJSON data');
           return;
       }
 
-      locationData.features.forEach((location, i) => {
-          const prop = location.properties;
-          if (!prop) {
-              console.error('No properties found in feature', location);
-              return;
+      // Group GeoJSON features by type
+      const groupedFeatures = {};
+      geojsonData.features.forEach(feature => {
+          const type = feature.properties.type; // Assuming there's a 'type' property for each feature
+          if (!groupedFeatures[type]) {
+              groupedFeatures[type] = [];
           }
+          groupedFeatures[type].push(feature);
+      });
 
-          const listing = document.createElement('div');
-          listing.id = 'listing-' + i;
-          listing.className = 'item';
+      // Iterate over checked checkboxes and build location list
+      Object.entries(checkedCheckboxes).forEach(([type, checked]) => {
+          if (checked && groupedFeatures[type]) {
+              // Add header for type
+              const header = document.createElement('h2');
+              header.textContent = type;
+              listings.appendChild(header);
 
-          const link = document.createElement('button');
-          link.className = 'title';
-          link.id = 'link-' + i;
-          link.innerHTML = '<p style="line-height: 1.25">' + prop[columnHeaders[0]]+ '</p>'; // Example, using 'name' property
+              // Build location list for features of this type
+              groupedFeatures[type].forEach((feature, i) => {
+                  const prop = feature.properties;
+                  if (!prop) {
+                      console.error('No properties found in feature', feature);
+                      return;
+                  }
 
-          const details = listing.appendChild(document.createElement('div'));
-          details.className = 'content';
+                  const listing = document.createElement('div');
+                  listing.id = 'listing-' + i;
+                  listing.className = 'item';
 
-          for (let i = 1; i < columnHeaders.length; i++) {
-            const div = document.createElement('div');
-            div.innerText += prop[columnHeaders[i]];
-            div.className;
-            details.appendChild(div);
+                  const link = document.createElement('button');
+                  link.className = 'title';
+                  link.id = 'link-' + i;
+                  link.innerHTML = '<p style="line-height: 1.25">' + prop[columnHeaders[0]] + '</p>'; // Example, using 'name' property
+
+                  const details = listing.appendChild(document.createElement('div'));
+                  details.className = 'content';
+
+                  for (let i = 1; i < columnHeaders.length; i++) {
+                    const div = document.createElement('div');
+                    div.innerText += prop[columnHeaders[i]];
+                    div.className;
+                    details.appendChild(div);
+                  }
+
+                  // Here you can add details based on your specific needs
+
+                  link.addEventListener('click', function () {
+                      // Implementation of flyToLocation, createPopup, etc., should be validated
+                      const clickedListing = feature.geometry.coordinates;
+                      flyToLocation(clickedListing);
+                      createPopup(feature);
+
+                      const activeItem = document.querySelector('.item.active');
+                      if (activeItem) {
+                          activeItem.classList.remove('active');
+                      }
+                      this.parentNode.classList.add('active');
+
+                      const content = this.nextElementSibling;
+                      if (content.style.maxHeight) {
+                          content.style.maxHeight = null;
+                      } else {
+                          content.style.maxHeight = content.scrollHeight + 'px';
+                      }
+                  });
+
+                  listing.appendChild(link);
+                  listing.appendChild(details);
+                  listings.appendChild(listing);
+              });
           }
-          // Here you can add details based on your specific needs
-
-          link.addEventListener('click', function () {
-              // Implementation of flyToLocation, createPopup, etc., should be validated
-              const clickedListing = location.geometry.coordinates;
-              flyToLocation(clickedListing);
-              createPopup(location);
-
-              const activeItem = document.querySelector('.item.active');
-              if (activeItem) {
-                  activeItem.classList.remove('active');
-              }
-              this.parentNode.classList.add('active');
-
-              const content = this.nextElementSibling;
-              if (content.style.maxHeight) {
-                  content.style.maxHeight = null;
-              } else {
-                  content.style.maxHeight = content.scrollHeight + 'px';
-              }
-          });
-
-          listing.appendChild(link);
-          listing.appendChild(details);
-          listings.appendChild(listing);
       });
   }
 
+  // Event listener for checkbox change
+  document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', toggleCsvLayer);
+  });
 
   toggleCsvLayer();
 
