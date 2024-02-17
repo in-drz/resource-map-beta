@@ -98,6 +98,28 @@ geocoder.on('result', (ev) => {
   sortByDistance(searchResult);
 });
 
+function attachCheckboxEventListeners() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const csvFilePath = this.value;
+            const layerId = this.id.replace('layer-', '');
+            if (this.checked) {
+                addCsvLayer(csvFilePath, layerId, function(geojsonData) {
+                    buildLocationList(geojsonData);
+                });
+            } else {
+                const layerIndex = activeLayers.findIndex(id => id.startsWith(layerId));
+                if (layerIndex > -1) {
+                    const uniqueLayerId = activeLayers[layerIndex];
+                    removeLayer(uniqueLayerId);
+                    activeLayers.splice(layerIndex, 1);
+                }
+            }
+        });
+    });
+}
+
 map.on('load', () => {
   // Add Mapbox geocoder control
   map.addControl(geocoder, 'top-right');
@@ -145,6 +167,12 @@ map.on('load', () => {
   function addCsvLayer(csvFilePath, layerId, callback) {
       const uniqueLayerId = layerId + new Date().getTime();
 
+      // Check if the layer is already added
+      if (activeLayers.includes(uniqueLayerId)) {
+          console.log("Layer already added: ", uniqueLayerId);
+          return; // If already added, don't add it again
+      }
+
       makeGeoJSON(csvFilePath, function(geojsonData) {
           map.addSource(uniqueLayerId, {
               type: 'geojson',
@@ -166,13 +194,18 @@ map.on('load', () => {
               }
           });
 
-          activeLayers.push(uniqueLayerId);
+          // Add the unique layer ID to the list of active layers only if it's not already there
+          if (!activeLayers.includes(uniqueLayerId)) {
+              activeLayers.push(uniqueLayerId);
+          }
 
+          // Call the callback function if it's provided
           if (callback && typeof callback === 'function') {
               callback(geojsonData);
           }
       });
   }
+
 
   function removeLayer(layerId) {
       if (map.getLayer(layerId)) {
