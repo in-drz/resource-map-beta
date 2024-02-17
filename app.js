@@ -422,11 +422,17 @@ map.on('load', () => {
           const link = document.createElement('button');
           link.className = 'title';
           link.id = 'link-' + i;
-          link.innerHTML = '<p style="line-height: 1.25">' + prop.name + '</p>'; // Example, using 'name' property
+          link.innerHTML = '<p style="line-height: 1.25">' + prop[columnHeaders[0]]+ '</p>'; // Example, using 'name' property
 
-          const details = document.createElement('div');
+          const details = listing.appendChild(document.createElement('div'));
           details.className = 'content';
 
+          for (let i = 1; i < columnHeaders.length; i++) {
+            const div = document.createElement('div');
+            div.innerText += prop[columnHeaders[i]];
+            div.className;
+            details.appendChild(div);
+          }
           // Here you can add details based on your specific needs
 
           link.addEventListener('click', function () {
