@@ -106,7 +106,6 @@ map.on('load', () => {
   // Define a mapping between layerId and colors
   const activeLayers = []; // Maintain a list of active layer IDs
 
-
   const layerIdColorMap = {
       'CSV1': '#3D2E5D',
       'CSV2': '#009688',
@@ -118,49 +117,34 @@ map.on('load', () => {
   function toggleCsvLayer() {
       const checkboxes = document.querySelectorAll('input[type="checkbox"]');
       checkboxes.forEach(checkbox => {
-          const csvFilePath = checkbox.value;
-          const layerId = checkbox.id.replace('layer-', ''); // Extract layerId from checkbox ID
-          const uniqueLayerId = layerId + new Date().getTime(); // Ensure unique layer ID
-
-          if (checkbox.checked && !activeLayers.includes(uniqueLayerId)) {
-              addCsvLayer(csvFilePath, uniqueLayerId); // Add layer if checked and not already added
-              activeLayers.push(uniqueLayerId); // Keep track of active layers
-          } else if (!checkbox.checked && activeLayers.includes(uniqueLayerId)) {
-              removeLayer(uniqueLayerId); // Remove layer if unchecked
-              const index = activeLayers.indexOf(uniqueLayerId);
-              if (index > -1) {
-                  activeLayers.splice(index, 1); // Remove from active layers tracking
+          checkbox.addEventListener('change', function() {
+              const csvFilePath = this.value;
+              const layerId = this.id.replace('layer-', '');
+              if (this.checked) {
+                  addCsvLayer(csvFilePath, layerId, function(geojsonData) {
+                      buildLocationList(geojsonData);
+                  });
+              } else {
+                  const uniqueLayerId = activeLayers.find(id => id.startsWith(layerId));
+                  if (uniqueLayerId) {
+                      removeLayer(uniqueLayerId);
+                  }
               }
-          }
+          });
       });
   }
 
-  function removeLayer(layerId) {
-      if (map.getLayer(layerId)) {
-          map.removeLayer(layerId);
-      }
-      if (map.getSource(layerId)) {
-          map.removeSource(layerId);
-      }
-  }
-
-
-  function addCsvLayer(csvFilePath, layerId) {
-      // Ensure layerId is unique to avoid conflicts
+  function addCsvLayer(csvFilePath, layerId, callback) {
       const uniqueLayerId = layerId + new Date().getTime();
 
-      // Load GeoJSON data from CSV file
       makeGeoJSON(csvFilePath, function(geojsonData) {
-          // Add source for the layer
           map.addSource(uniqueLayerId, {
               type: 'geojson',
               data: geojsonData
           });
 
-          // Get circleColor from layerIdColorMap or default to '#3D2E5D'
           const circleColor = layerIdColorMap[layerId] || '#3D2E5D';
 
-          // Add layer to the map
           map.addLayer({
               id: uniqueLayerId,
               type: 'circle',
@@ -174,20 +158,28 @@ map.on('load', () => {
               }
           });
 
-          // Add the new layer ID to the list of active layers
           activeLayers.push(uniqueLayerId);
+
+          if (callback && typeof callback === 'function') {
+              callback(geojsonData);
+          }
       });
   }
 
-
-  // Function to remove all active layers from the map
-  function removeAllLayers() {
-      activeLayers.forEach(layerId => {
+  function removeLayer(layerId) {
+      if (map.getLayer(layerId)) {
           map.removeLayer(layerId);
+      }
+      if (map.getSource(layerId)) {
           map.removeSource(layerId);
-      });
-      activeLayers.length = 0; // Clear the array
+      }
+      const index = activeLayers.indexOf(layerId);
+      if (index > -1) {
+          activeLayers.splice(index, 1);
+      }
   }
+
+  
 
   // Function to populate the CSV dropdown
   function populateCsvCheckboxes() {
