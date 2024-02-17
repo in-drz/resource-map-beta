@@ -369,65 +369,79 @@ map.on('load', () => {
 
   function buildLocationList(locationData) {
       const listings = document.getElementById('listings');
+      if (!listings) {
+          console.error('Listings element not found in the DOM');
+          return;
+      }
       listings.innerHTML = '';
 
-      // Check if locationData.features is defined and is an array
-      if (locationData && locationData.features && Array.isArray(locationData.features)) {
-          locationData.features.forEach((location, i) => {
-              const prop = location.properties;
-
-              const listing = document.createElement('div');
-              listing.id = 'listing-' + prop.id;
-              listing.className = 'item';
-
-              const link = document.createElement('button');
-              link.className = 'title';
-              link.id = 'link-' + prop.id;
-              link.innerHTML = '<p style="line-height: 1.25">' + prop[columnHeaders[0]] + '</p>';
-
-              const details = document.createElement('div');
-              details.className = 'content';
-
-              for (let j = 1; j < columnHeaders.length; j++) {
-                  const div = document.createElement('div');
-                  div.innerText += prop[columnHeaders[j]];
-                  details.appendChild(div);
-              }
-
-              link.addEventListener('click', function () {
-                  const clickedListing = location.geometry.coordinates;
-                  flyToLocation(clickedListing);
-                  createPopup(location);
-
-                  const activeItem = document.getElementsByClassName('active');
-                  if (activeItem[0]) {
-                      activeItem[0].classList.remove('active');
-                  }
-                  this.parentNode.classList.add('active');
-
-                  const divList = document.querySelectorAll('.content');
-                  const divCount = divList.length;
-                  for (let k = 0; k < divCount; k++) {
-                      divList[k].style.maxHeight = null;
-                  }
-
-                  this.parentNode.classList.toggle('active');
-                  const content = this.nextElementSibling;
-                  if (content.style.maxHeight) {
-                      content.style.maxHeight = null;
-                  } else {
-                      content.style.maxHeight = content.scrollHeight + 'px';
-                  }
-              });
-
-              listing.appendChild(link);
-              listing.appendChild(details);
-              listings.appendChild(listing);
-          });
-      } else {
+      // Ensure locationData.features is properly structured
+      if (!locationData || !locationData.features || !Array.isArray(locationData.features)) {
           console.error('Invalid or empty GeoJSON data');
-          // Handle the scenario of invalid or empty data here
+          return;
       }
+
+      locationData.features.forEach((location, i) => {
+          const prop = location.properties;
+          if (!prop) {
+              console.error('No properties found in feature', location);
+              return;
+          }
+
+          // Assuming columnHeaders is defined globally; validate its existence
+          if (!window.columnHeaders || !Array.isArray(window.columnHeaders)) {
+              console.error('columnHeaders is undefined or not an array');
+              return;
+          }
+
+          const listing = document.createElement('div');
+          listing.id = 'listing-' + i; // Changed from prop.id to i for simplicity
+          listing.className = 'item';
+
+          const link = document.createElement('button');
+          link.className = 'title';
+          link.id = 'link-' + i; // Changed from prop.id to i for consistency
+          link.innerHTML = '<p style="line-height: 1.25">' + prop[columnHeaders[0]] + '</p>';
+
+          const details = document.createElement('div');
+          details.className = 'content';
+
+          for (let j = 1; j < columnHeaders.length; j++) {
+              if (prop[columnHeaders[j]] === undefined) {
+                  console.warn('Property not found:', columnHeaders[j]);
+                  continue;
+              }
+              const div = document.createElement('div');
+              div.innerText = prop[columnHeaders[j]];
+              details.appendChild(div);
+          }
+
+          link.addEventListener('click', function () {
+              // Implementation of flyToLocation, createPopup, etc., should be validated
+              const clickedListing = location.geometry.coordinates;
+              flyToLocation(clickedListing);
+              createPopup(location);
+
+              // Simplified active item handling
+              const activeItem = document.querySelector('.item.active');
+              if (activeItem) {
+                  activeItem.classList.remove('active');
+              }
+              this.parentNode.classList.add('active');
+
+              // Toggle content visibility
+              const content = this.nextElementSibling;
+              if (content.style.maxHeight) {
+                  content.style.maxHeight = null;
+              } else {
+                  content.style.maxHeight = content.scrollHeight + 'px';
+              }
+          });
+
+          listing.appendChild(link);
+          listing.appendChild(details);
+          listings.appendChild(listing);
+      });
   }
 
 
