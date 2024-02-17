@@ -206,18 +206,21 @@ map.on('load', () => {
               container.appendChild(label);
 
               // Add event listener to the checkbox
-              const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-              checkboxes.forEach(checkbox => {
-                  checkbox.addEventListener('change', toggleCsvLayer);
-              });
+              attachCheckboxEventListeners();
           }
       });
   }
 
+  function attachCheckboxEventListeners() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', toggleCsvLayer);
+    });
+  }
 
 
   // Call this function when initializing your application
-populateCsvCheckboxes();
+  populateCsvCheckboxes();
 
   // Event listener for CSV dropdown change
 /*  document.getElementById('csvDropdown').addEventListener('change', function() {
