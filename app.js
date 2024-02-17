@@ -98,27 +98,6 @@ geocoder.on('result', (ev) => {
   sortByDistance(searchResult);
 });
 
-function attachCheckboxEventListeners() {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const csvFilePath = this.value;
-            const layerId = this.id.replace('layer-', '');
-            if (this.checked) {
-                addCsvLayer(csvFilePath, layerId, function(geojsonData) {
-                    buildLocationList(geojsonData);
-                });
-            } else {
-                const layerIndex = activeLayers.findIndex(id => id.startsWith(layerId));
-                if (layerIndex > -1) {
-                    const uniqueLayerId = activeLayers[layerIndex];
-                    removeLayer(uniqueLayerId);
-                    activeLayers.splice(layerIndex, 1);
-                }
-            }
-        });
-    });
-}
 
 map.on('load', () => {
   // Add Mapbox geocoder control
@@ -263,10 +242,25 @@ map.on('load', () => {
   }
 
   function attachCheckboxEventListeners() {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', toggleCsvLayer);
-    });
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+          checkbox.addEventListener('change', function() {
+              const csvFilePath = this.value; // Get the file path from the checkbox value
+              const layerId = this.id.replace('layer-', '');
+
+              if (this.checked) {
+                  loadCsv(csvFilePath); // Call loadCsv with the path of the checked CSV
+              } else {
+                  // Logic for when a checkbox is unchecked
+                  const layerIndex = activeLayers.findIndex(id => id.startsWith(layerId));
+                  if (layerIndex > -1) {
+                      const uniqueLayerId = activeLayers[layerIndex];
+                      removeLayer(uniqueLayerId);
+                      activeLayers.splice(layerIndex, 1);
+                  }
+              }
+          });
+      });
   }
 
 
