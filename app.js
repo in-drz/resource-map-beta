@@ -116,16 +116,34 @@ map.on('load', () => {
   };
 
   function toggleCsvLayer() {
-      removeAllLayers(); // Remove all existing layers
       const checkboxes = document.querySelectorAll('input[type="checkbox"]');
       checkboxes.forEach(checkbox => {
-          if (checkbox.checked) {
-              const csvFilePath = checkbox.value;
-              const layerId = checkbox.id.replace('layer-', ''); // Extract layerId from checkbox ID
-              addCsvLayer(csvFilePath, layerId);
+          const csvFilePath = checkbox.value;
+          const layerId = checkbox.id.replace('layer-', ''); // Extract layerId from checkbox ID
+          const uniqueLayerId = layerId + new Date().getTime(); // Ensure unique layer ID
+
+          if (checkbox.checked && !activeLayers.includes(uniqueLayerId)) {
+              addCsvLayer(csvFilePath, uniqueLayerId); // Add layer if checked and not already added
+              activeLayers.push(uniqueLayerId); // Keep track of active layers
+          } else if (!checkbox.checked && activeLayers.includes(uniqueLayerId)) {
+              removeLayer(uniqueLayerId); // Remove layer if unchecked
+              const index = activeLayers.indexOf(uniqueLayerId);
+              if (index > -1) {
+                  activeLayers.splice(index, 1); // Remove from active layers tracking
+              }
           }
       });
   }
+
+  function removeLayer(layerId) {
+      if (map.getLayer(layerId)) {
+          map.removeLayer(layerId);
+      }
+      if (map.getSource(layerId)) {
+          map.removeSource(layerId);
+      }
+  }
+
 
   function addCsvLayer(csvFilePath, layerId) {
       // Ensure layerId is unique to avoid conflicts
