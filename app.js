@@ -415,33 +415,19 @@ map.on('load', () => {
               return;
           }
 
-          // Assuming columnHeaders is defined globally; validate its existence
-          if (!window.columnHeaders || !Array.isArray(window.columnHeaders)) {
-              console.error('columnHeaders is undefined or not an array');
-              return;
-          }
-
           const listing = document.createElement('div');
-          listing.id = 'listing-' + i; // Changed from prop.id to i for simplicity
+          listing.id = 'listing-' + i;
           listing.className = 'item';
 
           const link = document.createElement('button');
           link.className = 'title';
-          link.id = 'link-' + i; // Changed from prop.id to i for consistency
-          link.innerHTML = '<p style="line-height: 1.25">' + prop[columnHeaders[0]] + '</p>';
+          link.id = 'link-' + i;
+          link.innerHTML = '<p style="line-height: 1.25">' + prop.name + '</p>'; // Example, using 'name' property
 
           const details = document.createElement('div');
           details.className = 'content';
 
-          for (let j = 1; j < columnHeaders.length; j++) {
-              if (prop[columnHeaders[j]] === undefined) {
-                  console.warn('Property not found:', columnHeaders[j]);
-                  continue;
-              }
-              const div = document.createElement('div');
-              div.innerText = prop[columnHeaders[j]];
-              details.appendChild(div);
-          }
+          // Here you can add details based on your specific needs
 
           link.addEventListener('click', function () {
               // Implementation of flyToLocation, createPopup, etc., should be validated
@@ -449,14 +435,12 @@ map.on('load', () => {
               flyToLocation(clickedListing);
               createPopup(location);
 
-              // Simplified active item handling
               const activeItem = document.querySelector('.item.active');
               if (activeItem) {
                   activeItem.classList.remove('active');
               }
               this.parentNode.classList.add('active');
 
-              // Toggle content visibility
               const content = this.nextElementSibling;
               if (content.style.maxHeight) {
                   content.style.maxHeight = null;
@@ -470,6 +454,7 @@ map.on('load', () => {
           listings.appendChild(listing);
       });
   }
+
 
   toggleCsvLayer();
 
