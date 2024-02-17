@@ -121,18 +121,21 @@ map.on('load', () => {
 
   // Function to toggle CSV layer
   function toggleCsvLayer() {
-      removeAllLayers(); // Remove all existing layers
       const checkboxes = document.querySelectorAll('input[type="checkbox"]');
       checkboxes.forEach(checkbox => {
-          checkedCheckboxes[checkbox.value] = checkbox.checked;
+          const csvFilePath = checkbox.value;
+          const layerId = checkbox.id.replace('layer-', '');
           if (checkbox.checked) {
-              const csvFilePath = checkbox.value;
-              const layerId = checkbox.id.replace('layer-', ''); // Extract layerId from checkbox ID
-              addCsvLayer(csvFilePath, layerId);
+              addCsvLayer(csvFilePath, layerId, function(geojsonData) {
+                  buildLocationList(geojsonData);
+              });
+          } else {
+              const uniqueLayerId = activeLayers.find(id => id.startsWith(layerId));
+              if (uniqueLayerId) {
+                  removeLayer(uniqueLayerId);
+              }
           }
       });
-      // Rebuild location list based on checked checkboxes
-      buildLocationList();
   }
 
   function attachCheckboxEventListeners() {
