@@ -115,7 +115,19 @@ map.on('load', () => {
       'CSV5': '#2196F3'
   };
 
-  function toggleCsvLayer(csvFilePath, layerId) {
+  function toggleCsvLayer() {
+      removeAllLayers(); // Remove all existing layers
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+          if (checkbox.checked) {
+              const csvFilePath = checkbox.value;
+              const layerId = checkbox.id.replace('layer-', ''); // Extract layerId from checkbox ID
+              addCsvLayer(csvFilePath, layerId);
+          }
+      });
+  }
+
+  function addCsvLayer(csvFilePath, layerId) {
       // Ensure layerId is unique to avoid conflicts
       const uniqueLayerId = layerId + new Date().getTime();
 
@@ -148,6 +160,7 @@ map.on('load', () => {
           activeLayers.push(uniqueLayerId);
       });
   }
+
 
   // Function to remove all active layers from the map
   function removeAllLayers() {
@@ -193,8 +206,9 @@ map.on('load', () => {
               container.appendChild(label);
 
               // Add event listener to the checkbox
-              checkbox.addEventListener('change', function() {
-                  toggleCsvLayer(this.value, uniqueSourceId); // Pass unique source ID
+              const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+              checkboxes.forEach(checkbox => {
+                  checkbox.addEventListener('change', toggleCsvLayer);
               });
           }
       });
