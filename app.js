@@ -114,22 +114,30 @@ map.on('load', () => {
       'CSV5': '#2196F3'
   };
 
+
   function toggleCsvLayer() {
       const checkboxes = document.querySelectorAll('input[type="checkbox"]');
       checkboxes.forEach(checkbox => {
-          checkbox.addEventListener('change', function() {
-              const csvFilePath = this.value;
-              const layerId = this.id.replace('layer-', '');
-              if (this.checked) {
-                  addCsvLayer(csvFilePath, layerId, function(geojsonData) {
-                      buildLocationList(geojsonData);
-                  });
-              } else {
-                  const uniqueLayerId = activeLayers.find(id => id.startsWith(layerId));
-                  if (uniqueLayerId) {
-                      removeLayer(uniqueLayerId);
-                  }
+          const csvFilePath = checkbox.value;
+          const layerId = checkbox.id.replace('layer-', '');
+          if (checkbox.checked) {
+              addCsvLayer(csvFilePath, layerId, function(geojsonData) {
+                  buildLocationList(geojsonData);
+              });
+          } else {
+              const uniqueLayerId = activeLayers.find(id => id.startsWith(layerId));
+              if (uniqueLayerId) {
+                  removeLayer(uniqueLayerId);
               }
+          }
+      });
+  }
+
+  function attachCheckboxEventListeners() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+          checkbox.addEventListener('change', function() {
+              toggleCsvLayer();
           });
       });
   }
@@ -437,7 +445,7 @@ map.on('load', () => {
   }
 
   toggleCsvLayer();
-  
+
   // Add event listeners for sidebar toggle arrows
   document.getElementById('toggleLeft').addEventListener('click', function () {
     document.getElementById('sidebarB').classList.add('collapsed');
